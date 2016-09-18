@@ -4,9 +4,9 @@ public abstract class GameState
 {
     protected GameController _gameController;
     
-    protected GameState(GameController cellGrid)
+    protected GameState(GameController gameController)
     {
-        _gameController = cellGrid;
+        _gameController = gameController;
     }
 
     public virtual void OnUnitClicked(Unit unit)

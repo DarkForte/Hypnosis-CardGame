@@ -1,7 +1,7 @@
 class HumanPlayer : Player
 {
-    public override void Play(GameController cellGrid)
+    public override void Play(GameController gamecontroller)
     {
-        cellGrid.GameState = new GameStateWaitingInput(cellGrid);
+        gamecontroller.GameState = new GameStateWaitingInput(gamecontroller);
     }
 }

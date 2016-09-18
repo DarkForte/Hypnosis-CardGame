@@ -37,7 +37,6 @@ public abstract class Unit : MonoBehaviour
 
     public int TotalHitPoints { get; private set; }
     protected int TotalMovementPoints;
-    protected int TotalActionPoints;
 
     /// <summary>
     /// Cell that the unit is currently occupying.
@@ -56,10 +55,7 @@ public abstract class Unit : MonoBehaviour
     /// Determines speed of movement animation.
     /// </summary>
     public float MovementSpeed;
-    /// <summary>
-    /// Determines how many attacks unit can perform in one turn.
-    /// </summary>
-    public int ActionPoints;
+
 
     /// <summary>
     /// Indicates the player that the unit belongs to. Should correspoond with PlayerNumber variable on Player script.
@@ -84,7 +80,6 @@ public abstract class Unit : MonoBehaviour
 
         TotalHitPoints = HitPoints;
         TotalMovementPoints = MovementPoints;
-        TotalActionPoints = ActionPoints;
     }
 
     protected virtual void OnMouseDown()
@@ -109,7 +104,6 @@ public abstract class Unit : MonoBehaviour
     public virtual void OnTurnStart()
     {
         MovementPoints = TotalMovementPoints;
-        ActionPoints = TotalActionPoints;
 
         SetState(new UnitStateMarkedAsFriendly(this));
     }
@@ -170,20 +164,13 @@ public abstract class Unit : MonoBehaviour
     {
         if (isMoving)
             return;
-        if (ActionPoints == 0)
-            return;
+
         if (!IsUnitAttackable(other, Cell))
             return;
 
         MarkAsAttacking(other);
-        ActionPoints--;
         other.Defend(this, AttackFactor);
 
-        if (ActionPoints == 0)
-        {
-            SetState(new UnitStateMarkedAsFinished(this));
-            MovementPoints = 0;
-        }  
     }
     /// <summary>
     /// Attacking unit calls Defend method on defending unit. 

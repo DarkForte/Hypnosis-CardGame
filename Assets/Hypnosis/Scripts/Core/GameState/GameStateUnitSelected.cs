@@ -9,7 +9,7 @@ class GameStateUnitSelected : GameState
 
     private Cell _unitCell;
 
-    public GameStateUnitSelected(GameController cellGrid, Unit unit) : base(cellGrid)
+    public GameStateUnitSelected(GameController gameController, Unit unit) : base(gameController)
     {
         _unit = unit;
         _pathsInRange = new List<Cell>();
@@ -42,7 +42,7 @@ class GameStateUnitSelected : GameState
         if (unit.Equals(_unit) || unit.isMoving)
             return;
 
-        if (_unitsInRange.Contains(unit) && _unit.ActionPoints > 0)
+        if (_unitsInRange.Contains(unit))
         {
             _unit.DealDamage(unit);
             _gameController.GameState = new GameStateUnitSelected(_gameController, _unit);
@@ -96,8 +96,6 @@ class GameStateUnitSelected : GameState
         {
             cell.MarkAsReachable();
         }
-
-        if (_unit.ActionPoints <= 0) return;
 
         foreach (var currentUnit in _gameController.Units)
         {
