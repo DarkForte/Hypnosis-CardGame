@@ -53,7 +53,7 @@ public class NaiveAiPlayer : Player
                 potentialDestinations.AddRange(_cellGrid.Cells.FindAll(c=> unit.IsCellMovableTo(c) && unit.IsUnitAttackable(enemyUnit, c))); 
             }//Making a list of cells that the unit can attack from.
       
-            var notInRange = potentialDestinations.FindAll(c => c.GetDistance(unit.Cell) > unit.MovementPoints);
+            var notInRange = potentialDestinations.FindAll(c => c.GetDistance(unit.Cell) > 1);
             potentialDestinations = potentialDestinations.Except(notInRange).ToList();
 
             if (potentialDestinations.Count == 0 && notInRange.Count !=0)
@@ -70,7 +70,7 @@ public class NaiveAiPlayer : Player
                     shortestPath = path;
 
                 var pathCost = path.Sum(h => h.MovementCost);
-                if (pathCost > 0 && pathCost <= unit.MovementPoints)
+                if (pathCost > 0 && pathCost <= 1)
                 {
                     unit.Move(potentialDestination, path);
                     while (unit.isMoving)
@@ -87,7 +87,7 @@ public class NaiveAiPlayer : Player
                 {
                     var path = unit.FindPath(_cellGrid.Cells, potentialDestination);
                     var pathCost = path.Sum(h => h.MovementCost);
-                    if (pathCost > 0 && pathCost <= unit.MovementPoints)
+                    if (pathCost > 0 && pathCost <= 1)
                     {
                         unit.Move(potentialDestination, path);
                         while (unit.isMoving)

@@ -10,7 +10,6 @@ using System;
 public class GameController : MonoBehaviour
 {
     public event EventHandler GameEnded;
-    public event EventHandler TurnEnded;
     
     private GameState _gameState;//The grid delegates some of its behaviours to cellGridState object.
     public GameState GameState
@@ -59,8 +58,7 @@ public class GameController : MonoBehaviour
         Players.Sort( (p1, p2) => (p1.PlayerNumber < p2.PlayerNumber)? -1:1 );
 
         NumberOfPlayers = Players.Count;
-        CurrentPlayerNumber = Players.Min(p => p.PlayerNumber);
-        FirstPlayerNumber = CurrentPlayerNumber;
+        FirstPlayerNumber = NumberOfPlayers -1;
 
         Cells = new List<Cell>();
         for (int i = 0; i < CellParent.childCount; i++)
@@ -128,34 +126,49 @@ public class GameController : MonoBehaviour
     /// </summary>
     public void StartGame()
     {
+        Players.ForEach(p => p.InitCardPool());
         GameState = new GameStateRoundStart(this);
+        StartRound();
+    }
 
-        Units.FindAll(u => u.PlayerNumber.Equals(CurrentPlayerNumber)).ForEach(u => { u.OnTurnStart(); });
+    public void StartRound()
+    {
+        int i;
+        for (i = 0; i <= NumberOfPlayers -1 ; i++)
+        {
+            List<CardType> nowCandidates = Players[i].DrawCards(5);
+
+            List<CardType> nowCards = new List<CardType>();
+            for (int j = 0; j < 3; j++)
+            {
+                nowCards.Add(nowCandidates[j]);
+            }
+
+            Players[i].NowCards = nowCards;
+            Players[i].p_NowCards = 0;
+        }
+        FirstPlayerNumber = 1 - FirstPlayerNumber;
+        CurrentPlayerNumber = FirstPlayerNumber;
         Players[CurrentPlayerNumber].Play(this);
     }
+
     /// <summary>
-    /// Method makes turn transitions. It is called by player at the end of his turn.
+    /// Method makes turn transitions. It is called at the end of each action.
     /// </summary>
     public void EndTurn()
     {
-        if (Units.Select(u => u.PlayerNumber).Distinct().Count() == 1)
-        {
-            return;
-        }
         GameState = new GameStateTurnChanging(this);
 
-        Units.FindAll(u => u.PlayerNumber.Equals(CurrentPlayerNumber)).ForEach(u => { u.OnTurnEnd(); });
-
         CurrentPlayerNumber = (CurrentPlayerNumber + 1) % NumberOfPlayers;
-        while (Units.FindAll(u => u.PlayerNumber.Equals(CurrentPlayerNumber)).Count == 0)
+
+        if(Players[CurrentPlayerNumber].p_NowCards == 3)
         {
-            CurrentPlayerNumber = (CurrentPlayerNumber + 1)%NumberOfPlayers;
-        }//Skipping players that are defeated.
-
-        if (TurnEnded != null)
-            TurnEnded.Invoke(this, new EventArgs());
-
-        Units.FindAll(u => u.PlayerNumber.Equals(CurrentPlayerNumber)).ForEach(u => { u.OnTurnStart(); });
-        Players.Find(p => p.PlayerNumber.Equals(CurrentPlayerNumber)).Play(this);     
+            GameState = new GameStateRoundStart(this);
+            StartRound();
+        }
+        else
+        {
+            Players[CurrentPlayerNumber].Play(this);
+        }
     }
 }

@@ -35,22 +35,18 @@ public abstract class Unit : MonoBehaviour
 
     public List<Buff> Buffs { get; private set; }
 
-    public int TotalHitPoints { get; private set; }
-    protected int TotalMovementPoints;
+    public int MaxHP { get; private set; }
 
     /// <summary>
     /// Cell that the unit is currently occupying.
     /// </summary>
     public Cell Cell { get; set; }
 
-    public int HitPoints;
+    public int HP { get; protected set; }
     public int AttackRange;
     public int AttackFactor;
     public int DefenceFactor;
-    /// <summary>
-    /// Determines how far on the grid the unit can move.
-    /// </summary>
-    public int MovementPoints;
+ 
     /// <summary>
     /// Determines speed of movement animation.
     /// </summary>
@@ -78,8 +74,7 @@ public abstract class Unit : MonoBehaviour
 
         UnitState = new UnitStateNormal(this);
 
-        TotalHitPoints = HitPoints;
-        TotalMovementPoints = MovementPoints;
+        HP = MaxHP;
     }
 
     protected virtual void OnMouseDown()
@@ -103,8 +98,6 @@ public abstract class Unit : MonoBehaviour
     /// </summary>
     public virtual void OnTurnStart()
     {
-        MovementPoints = TotalMovementPoints;
-
         SetState(new UnitStateMarkedAsFriendly(this));
     }
     /// <summary>
@@ -178,12 +171,12 @@ public abstract class Unit : MonoBehaviour
     protected virtual void Defend(Unit other, int damage)
     {
         MarkAsDefending(other);
-        HitPoints -= Mathf.Clamp(damage - DefenceFactor, 1, damage);  //Damage is calculated by subtracting attack factor of attacker and defence factor of defender. If result is below 1, it is set to 1.
+        HP -= Mathf.Clamp(damage - DefenceFactor, 1, damage);  //Damage is calculated by subtracting attack factor of attacker and defence factor of defender. If result is below 1, it is set to 1.
                                                                       //This behaviour can be overridden in derived classes.
         if (UnitAttacked != null)
             UnitAttacked.Invoke(this, new AttackEventArgs(other, this, damage));
 
-        if (HitPoints <= 0)
+        if (HP <= 0)
         {
             if (UnitDestroyed != null)
                 UnitDestroyed.Invoke(this, new AttackEventArgs(other, this, damage));
@@ -197,10 +190,7 @@ public abstract class Unit : MonoBehaviour
             return;
 
         var totalMovementCost = path.Sum(h => h.MovementCost);
-        if (MovementPoints < totalMovementCost)
-            return;
 
-        MovementPoints -= totalMovementCost;
 
         Cell.IsTaken = false;
         Cell = destinationCell;
@@ -251,9 +241,9 @@ public abstract class Unit : MonoBehaviour
     public List<Cell> GetAvailableDestinations(List<Cell> cells)
     {
         var ret = new List<Cell>();
-        var cellsInMovementRange = cells.FindAll(c => IsCellMovableTo(c) && c.GetDistance(Cell) <= MovementPoints);
+        var cellsInMovementRange = cells.FindAll(c => IsCellMovableTo(c) && c.GetDistance(Cell) <= 1);
 
-        var traversableCells = cells.FindAll(c => IsCellTraversable(c) && c.GetDistance(Cell) <= MovementPoints);
+        var traversableCells = cells.FindAll(c => IsCellTraversable(c) && c.GetDistance(Cell) <= 1);
         traversableCells.Add(Cell);
 
         foreach (var cellInRange in cellsInMovementRange)
@@ -262,7 +252,7 @@ public abstract class Unit : MonoBehaviour
 
             var path = FindPath(traversableCells, cellInRange);
             var pathCost = path.Sum(c => c.MovementCost);
-            if (pathCost > 0 && pathCost <= MovementPoints)
+            if (pathCost > 0)
                 ret.AddRange(path);
         }
         return ret.FindAll(IsCellMovableTo).Distinct().ToList();

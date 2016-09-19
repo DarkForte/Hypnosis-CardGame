@@ -9,6 +9,7 @@ public abstract class Player : MonoBehaviour
     int p_CardPool;
 
     public List<CardType> NowCards;
+    public int p_NowCards;
 
     /// <summary>
     /// Method is called every turn. Allows player to interact with his units.
@@ -17,14 +18,14 @@ public abstract class Player : MonoBehaviour
 
     public void InitCardPool()
     {
-        CardPool = new List<CardType>(Constants.CARD_POOL_SIZE);
+        CardPool = new List<CardType>();
         int i;
         for(i=1; i<=Constants.CARD_POOL_SIZE; i++)
         {
-            CardPool[i] = CardType.MOVE;
+            CardPool.Add(CardType.MOVE);
         }
 
-        p_CardPool = 1;
+        p_CardPool = 0;
 
         return;
     }
