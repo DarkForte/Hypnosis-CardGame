@@ -6,6 +6,5 @@ class HumanPlayer : Player
     {
         gamecontroller.GameState = new GameStateWaitingInput(gamecontroller, NowCards[p_NowCards]);
         p_NowCards++;
-        Debug.Log(p_NowCards);
     }
 }

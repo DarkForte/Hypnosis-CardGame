@@ -4,14 +4,14 @@ using System.Linq;
 using System;
 
 /// <summary>
-/// CellGrid class keeps track of the game, stores cells, units and players objects. It starts the game and makes turn transitions. 
+/// GameController class keeps track of the game, stores cells, units and players objects. It starts the game and makes turn transitions. 
 /// It reacts to user interacting with units or cells, and raises events related to game progress. 
 /// </summary>
 public class GameController : MonoBehaviour
 {
     public event EventHandler GameEnded;
     
-    private GameState _gameState;//The grid delegates some of its behaviours to cellGridState object.
+    private GameState _gameState;//The grid delegates some of its behaviours to gameState object.
     public GameState GameState
     {
         private get
@@ -31,7 +31,7 @@ public class GameController : MonoBehaviour
 
     public Player CurrentPlayer
     {
-        get { return Players.Find(p => p.PlayerNumber.Equals(CurrentPlayerNumber)); }
+        get { return Players[CurrentPlayerNumber]; }
     }
     public int CurrentPlayerNumber { get; private set; }
     public int FirstPlayerNumber;
@@ -133,10 +133,9 @@ public class GameController : MonoBehaviour
 
     public void StartRound()
     {
-        int i;
-        for (i = 0; i <= NumberOfPlayers -1 ; i++)
+        foreach(var player in Players)
         {
-            List<CardType> nowCandidates = Players[i].DrawCards(5);
+            List<CardType> nowCandidates = player.DrawCards(5);
 
             List<CardType> nowCards = new List<CardType>();
             for (int j = 0; j < 3; j++)
@@ -144,11 +143,12 @@ public class GameController : MonoBehaviour
                 nowCards.Add(nowCandidates[j]);
             }
 
-            Players[i].NowCards = nowCards;
-            Players[i].p_NowCards = 0;
+            player.NowCards = nowCards;
+            player.p_NowCards = 0;
         }
         FirstPlayerNumber = 1 - FirstPlayerNumber;
         CurrentPlayerNumber = FirstPlayerNumber;
+        Debug.Log("Round Start! First player = " + FirstPlayerNumber);
         Players[CurrentPlayerNumber].Play(this);
     }
 

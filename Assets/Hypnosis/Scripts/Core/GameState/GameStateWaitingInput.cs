@@ -4,7 +4,7 @@ class GameStateWaitingInput : GameState
 {
     CardType NowAction;
 
-    public GameStateWaitingInput(GameController cellGrid, CardType nowAction) : base(cellGrid)
+    public GameStateWaitingInput(GameController gameController, CardType nowAction) : base(gameController)
     {
         NowAction = nowAction;
         Debug.Log(nowAction);
@@ -15,4 +15,4 @@ class GameStateWaitingInput : GameState
         if(unit.PlayerNumber.Equals(_gameController.CurrentPlayerNumber))
             _gameController.GameState = new GameStateUnitSelected(_gameController, unit, NowAction); 
     }
-}
+} 

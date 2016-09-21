@@ -16,14 +16,35 @@ public abstract class Player : MonoBehaviour
     /// </summary>         
     public abstract void Play(GameController gameController);
 
+    private void ShuffleCardPool()
+    {
+        int i;
+        int cnt = CardPool.Count;
+        for(i=0; i<cnt; i++)
+        {
+            int nowPos = Utils.randomGenerator.Next(i, cnt);
+            //swap CardPool[i], CardPool[nowPos]
+            CardType tmp = CardPool[nowPos];
+            CardPool[nowPos] = CardPool[i];
+            CardPool[i] = tmp;
+            i++;
+        }
+    }
+
     public void InitCardPool()
     {
         CardPool = new List<CardType>();
         int i;
-        for(i=1; i<=Constants.CARD_POOL_SIZE; i++)
+        for(i=1; i<=Constants.CARD_POOL_SIZE/2; i++)
         {
             CardPool.Add(CardType.MOVE);
         }
+        for(i=Constants.CARD_POOL_SIZE/2+1; i<=Constants.CARD_POOL_SIZE; i++)
+        {
+            CardPool.Add(CardType.ATTACK);
+        }
+
+        ShuffleCardPool();
 
         p_CardPool = 0;
 
