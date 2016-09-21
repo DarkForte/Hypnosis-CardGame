@@ -83,7 +83,7 @@ public class NaiveAiPlayer : Player
 
             if (shortestPath != null)
             {      
-                foreach (var potentialDestination in shortestPath.Intersect(unit.GetAvailableDestinations(_cellGrid.Cells)).OrderByDescending(h => h.GetDistance(unit.Cell)))
+                foreach (var potentialDestination in shortestPath.Intersect(unit.GetAvailableDestinations(_cellGrid.CellMap)).OrderByDescending(h => h.GetDistance(unit.Cell)))
                 {
                     var path = unit.FindPath(_cellGrid.Cells, potentialDestination);
                     var pathCost = path.Sum(h => h.MovementCost);

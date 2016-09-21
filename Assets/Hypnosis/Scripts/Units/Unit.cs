@@ -44,7 +44,7 @@ public abstract class Unit : MonoBehaviour
 
     public int HP { get; protected set; }
     public int AttackRange;
-    public int AttackFactor;
+    public int AttackPower;
     public int DefenceFactor;
  
     /// <summary>
@@ -162,7 +162,7 @@ public abstract class Unit : MonoBehaviour
             return;
 
         MarkAsAttacking(other);
-        other.Defend(this, AttackFactor);
+        other.Defend(this, AttackPower);
 
     }
     /// <summary>
@@ -190,7 +190,6 @@ public abstract class Unit : MonoBehaviour
             return;
 
         var totalMovementCost = path.Sum(h => h.MovementCost);
-
 
         Cell.IsTaken = false;
         Cell = destinationCell;
@@ -238,25 +237,7 @@ public abstract class Unit : MonoBehaviour
     /// <summary>
     /// Method returns all cells that the unit is capable of moving to.
     /// </summary>
-    public List<Cell> GetAvailableDestinations(List<Cell> cells)
-    {
-        var ret = new List<Cell>();
-        var cellsInMovementRange = cells.FindAll(c => IsCellMovableTo(c) && c.GetDistance(Cell) <= 1);
-
-        var traversableCells = cells.FindAll(c => IsCellTraversable(c) && c.GetDistance(Cell) <= 1);
-        traversableCells.Add(Cell);
-
-        foreach (var cellInRange in cellsInMovementRange)
-        {
-            if (cellInRange.Equals(Cell)) continue;
-
-            var path = FindPath(traversableCells, cellInRange);
-            var pathCost = path.Sum(c => c.MovementCost);
-            if (pathCost > 0)
-                ret.AddRange(path);
-        }
-        return ret.FindAll(IsCellMovableTo).Distinct().ToList();
-    }
+    public abstract List<Cell> GetAvailableDestinations(Dictionary<Vector2, Cell> cellMap);
 
     public List<Cell> FindPath(List<Cell> cells, Cell destination)
     {

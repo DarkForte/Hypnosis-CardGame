@@ -1,7 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class GenericUnit : Unit
+public abstract class GenericUnit : Unit
 {
     public string UnitName;
 
@@ -119,5 +121,6 @@ public class GenericUnit : Unit
             _renderer.color = color;
         }
     }
+
 }
 

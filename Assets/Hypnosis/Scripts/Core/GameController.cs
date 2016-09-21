@@ -41,6 +41,7 @@ public class GameController : MonoBehaviour
 
     public List<Player> Players { get; private set; }
     public List<Cell> Cells { get; private set; }
+    public Dictionary<Vector2, Cell> CellMap { get; private set; }
     public List<Unit> Units { get; private set; }
 
     void Start()
@@ -61,11 +62,15 @@ public class GameController : MonoBehaviour
         FirstPlayerNumber = NumberOfPlayers -1;
 
         Cells = new List<Cell>();
+        CellMap = new Dictionary<Vector2, Cell>();
         for (int i = 0; i < CellParent.childCount; i++)
         {
             var cell = CellParent.GetChild(i).gameObject.GetComponent<Cell>();
             if (cell != null)
+            {
                 Cells.Add(cell);
+                CellMap[cell.OffsetCoord] = cell;
+            }
             else
                 Debug.LogError("Invalid object in cells paretn game object");
         }

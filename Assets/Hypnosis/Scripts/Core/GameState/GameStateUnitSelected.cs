@@ -25,7 +25,7 @@ class GameStateUnitSelected : GameState
 
         if(_nowAction == CardType.MOVE)
         {
-            _pathsInRange = _unit.GetAvailableDestinations(_gameController.Cells);
+            _pathsInRange = _unit.GetAvailableDestinations(_gameController.CellMap);
             var cellsNotInRange = _gameController.Cells.Except(_pathsInRange);
 
             foreach (var cell in cellsNotInRange)
