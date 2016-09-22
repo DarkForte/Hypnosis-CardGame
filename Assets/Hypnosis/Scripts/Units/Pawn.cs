@@ -6,9 +6,8 @@ using UnityEngine;
 
 class Pawn : GenericUnit
 {
-    public override void Initialize()
-    {
-        base.Initialize();
+    public override void InitializeMoveAndAttack()
+    { 
         Vector2[] direction = { new Vector2(0, 1), new Vector2(-1, 1), new Vector2(1, 1) };
         foreach (Vector2 dir in direction)
         {
@@ -19,7 +18,7 @@ class Pawn : GenericUnit
                 realDir = dir;
             Moves.Add(realDir);
         }
-        Steps = 1;
+        AttackMoves = CommonMovement.dir4;
     }
 
 

@@ -39,17 +39,8 @@ class GameStateUnitSelected : GameState
         }
         else if(_nowAction == CardType.ATTACK)
         {
-            foreach (var currentUnit in _gameController.Units)
-            {
-                if (currentUnit.PlayerNumber.Equals(_unit.PlayerNumber))
-                    continue;
-
-                if (_unit.IsUnitAttackable(currentUnit, _unit.Cell))
-                {
-                    currentUnit.SetState(new UnitStateMarkedAsReachableEnemy(currentUnit));
-                    _unitsInRange.Add(currentUnit);
-                }
-            }
+            _unitsInRange = _unit.GetEnemiesInRange(_gameController.Units);
+            _unitsInRange.ForEach(e => e.MarkAsReachableEnemy());
         }
     }
 
@@ -60,21 +51,21 @@ class GameStateUnitSelected : GameState
         if (_nowAction == CardType.ATTACK)
             return;
 
-        if(cell.IsTaken)
+        if(cell.IsTaken || !_pathsInRange.Contains(cell))
         {
             _gameController.GameState = new GameStateWaitingInput(_gameController, _nowAction);
             return;
         }
             
-        if(!_pathsInRange.Contains(cell))
-        {
-            _gameController.GameState = new GameStateWaitingInput(_gameController, _nowAction);
-        }
-        else
+        if(_nowAction == CardType.MOVE)
         {
             var path = _unit.FindPath(_gameController.CellMap, cell);
-            _unit.Move(cell,path);
+            _unit.Move(cell, path);
             _gameController.EndTurn();
+        }
+        else //SUMMON
+        {
+            
         }
     }
     public override void OnUnitClicked(Unit unit)

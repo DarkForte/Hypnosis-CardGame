@@ -5,5 +5,5 @@ using System.Text;
 
 public enum CardType
 {
-    MOVE, ATTACK
+    MOVE, ATTACK, YUREN
 }

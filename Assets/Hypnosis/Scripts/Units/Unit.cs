@@ -43,14 +43,15 @@ public abstract class Unit : MonoBehaviour
     public Cell Cell { get; set; }
 
     public int HP { get; protected set; }
-    public int AttackRange;
-    public int AttackPower;
     public int DefenceFactor;
 
-    public List<Vector2> Moves  { get; protected set; }
-    public int Steps { get; protected set; }
-    
- 
+    public List<Vector2> Moves { get; protected set; }
+    public int Steps;
+    public List<Vector2> AttackMoves { get; protected set; }
+    public int AttackRange;
+    public int AttackPower;
+
+
     /// <summary>
     /// Determines speed of movement animation.
     /// </summary>
@@ -75,14 +76,15 @@ public abstract class Unit : MonoBehaviour
     public virtual void Initialize()
     {
         Buffs = new List<Buff>();
-
         UnitState = new UnitStateNormal(this);
-
         HP = MaxHP;
 
         Moves = new List<Vector2>();
-        Steps = 1;
+
+        InitializeMoveAndAttack();
     }
+    public abstract void InitializeMoveAndAttack();
+
 
     protected virtual void OnMouseDown()
     {
@@ -157,6 +159,22 @@ public abstract class Unit : MonoBehaviour
 
         return false;
     }
+
+    public virtual List<Unit> GetEnemiesInRange(List<Unit> units)
+    {
+        List<Unit> ret = new List<Unit>();
+        List<Unit> enemies = units.FindAll(u => u.PlayerNumber != PlayerNumber);
+
+        foreach (var currentUnit in enemies)
+        {
+            if (Cell.GetDistance(currentUnit.Cell) <= AttackRange)
+            {
+                ret.Add(currentUnit);
+            }
+        }
+        return ret;
+    }
+
     /// <summary>
     /// Method deals damage to unit given as parameter.
     /// </summary>
@@ -179,7 +197,7 @@ public abstract class Unit : MonoBehaviour
     {
         MarkAsDefending(other);
         HP -= Mathf.Clamp(damage - DefenceFactor, 1, damage);  //Damage is calculated by subtracting attack factor of attacker and defence factor of defender. If result is below 1, it is set to 1.
-                                                                      //This behaviour can be overridden in derived classes.
+                                                               //This behaviour can be overridden in derived classes.
         if (UnitAttacked != null)
             UnitAttacked.Invoke(this, new AttackEventArgs(other, this, damage));
 
@@ -208,7 +226,7 @@ public abstract class Unit : MonoBehaviour
             transform.position = Cell.transform.position;
 
         if (UnitMoved != null)
-            UnitMoved.Invoke(this, new MovementEventArgs(Cell, destinationCell, path));    
+            UnitMoved.Invoke(this, new MovementEventArgs(Cell, destinationCell, path));
     }
     protected virtual IEnumerator MovementAnimation(List<Cell> path)
     {
@@ -217,9 +235,9 @@ public abstract class Unit : MonoBehaviour
         path.Reverse();
         foreach (var cell in path)
         {
-            while (new Vector2(transform.position.x,transform.position.y) != new Vector2(cell.transform.position.x,cell.transform.position.y))
+            while (new Vector2(transform.position.x, transform.position.y) != new Vector2(cell.transform.position.x, cell.transform.position.y))
             {
-                transform.position = Vector3.MoveTowards(transform.position, new Vector3(cell.transform.position.x,cell.transform.position.y,transform.position.z), Time.deltaTime * MovementSpeed);
+                transform.position = Vector3.MoveTowards(transform.position, new Vector3(cell.transform.position.x, cell.transform.position.y, transform.position.z), Time.deltaTime * MovementSpeed);
                 yield return 0;
             }
         }
@@ -357,7 +375,7 @@ public class CommonMovement
             dir4.Add(d);
             dir8.Add(d);
         }
-        foreach(var d in d8)
+        foreach (var d in d8)
         {
             dir8.Add(d);
         }

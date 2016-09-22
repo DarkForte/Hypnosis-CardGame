@@ -6,9 +6,9 @@ using UnityEngine;
 
 class Base : GenericUnit
 {
-    public override List<Cell> GetAvailableDestinations(Dictionary<Vector2, Cell> cellMap)
+    public override void InitializeMoveAndAttack()
     {
-        return new List<Cell>(); // Base cannot move
+        Steps = 0; // base cannot move
     }
 }
 
