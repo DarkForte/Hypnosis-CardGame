@@ -72,7 +72,7 @@ class GameStateUnitSelected : GameState
         }
         else
         {
-            var path = _unit.FindPath(_gameController.Cells, cell);
+            var path = _unit.FindPath(_gameController.CellMap, cell);
             _unit.Move(cell,path);
             _gameController.EndTurn();
         }
@@ -114,7 +114,7 @@ class GameStateUnitSelected : GameState
     {
         base.OnCellSelected(cell);
         if (!_pathsInRange.Contains(cell)) return;
-        var path = _unit.FindPath(_gameController.Cells, cell);
+        var path = _unit.FindPath(_gameController.CellMap, cell);
         foreach (var _cell in path)
         {
             _cell.MarkAsPath();

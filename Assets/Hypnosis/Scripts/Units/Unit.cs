@@ -46,6 +46,10 @@ public abstract class Unit : MonoBehaviour
     public int AttackRange;
     public int AttackPower;
     public int DefenceFactor;
+
+    public List<Vector2> Moves  { get; protected set; }
+    public int Steps { get; protected set; }
+    
  
     /// <summary>
     /// Determines speed of movement animation.
@@ -75,6 +79,9 @@ public abstract class Unit : MonoBehaviour
         UnitState = new UnitStateNormal(this);
 
         HP = MaxHP;
+
+        Moves = new List<Vector2>();
+        Steps = 1;
     }
 
     protected virtual void OnMouseDown()
@@ -237,32 +244,37 @@ public abstract class Unit : MonoBehaviour
     /// <summary>
     /// Method returns all cells that the unit is capable of moving to.
     /// </summary>
-    public abstract List<Cell> GetAvailableDestinations(Dictionary<Vector2, Cell> cellMap);
-
-    public List<Cell> FindPath(List<Cell> cells, Cell destination)
+    public virtual List<Cell> GetAvailableDestinations(Dictionary<Vector2, Cell> cellMap)
     {
-        return _pathfinder.FindPath(GetGraphEdges(cells), Cell, destination);
+        return BFSDestinationFinder.FindCellsWithinSteps(cellMap, Cell, Moves, Steps);
+    }
+
+    public List<Cell> FindPath(Dictionary<Vector2, Cell> cellMap, Cell destination)
+    {
+        return _pathfinder.FindPath(GetGraphEdges(cellMap, Moves), Cell, destination);
     }
     /// <summary>
     /// Method returns graph representation of cell grid for pathfinding.
     /// </summary>
-    protected virtual Dictionary<Cell, Dictionary<Cell, int>> GetGraphEdges(List<Cell> cells)
+    protected Dictionary<Cell, Dictionary<Cell, int>> GetGraphEdges(Dictionary<Vector2, Cell> cellMap, List<Vector2> movement)
     {
         Dictionary<Cell, Dictionary<Cell, int>> ret = new Dictionary<Cell, Dictionary<Cell, int>>();
-        foreach (var cell in cells)
+        foreach (var cell in cellMap.Values)
         {
-            if (IsCellTraversable(cell) || cell.Equals(Cell))
+            Vector2 offset = cell.OffsetCoord;
+            ret[cell] = new Dictionary<Cell, int>();
+            foreach (var nowDirection in Moves)
             {
-                ret[cell] = new Dictionary<Cell, int>();
-                foreach (var neighbour in cell.GetNeighbours(cells).FindAll(IsCellTraversable))
+                Vector2 nowCoord = offset + nowDirection;
+                if (cellMap.ContainsKey(nowCoord) && cellMap[nowCoord].IsTaken == false)
                 {
-                    ret[cell][neighbour] = neighbour.MovementCost;
+                    Cell targetCell = cellMap[nowCoord];
+                    ret[cell][targetCell] = targetCell.MovementCost;
                 }
             }
         }
         return ret;
     }
-
     /// <summary>
     /// Gives visual indication that the unit is under attack.
     /// </summary>
@@ -327,5 +339,27 @@ public class AttackEventArgs : EventArgs
         Defender = defender;
 
         Damage = damage;
+    }
+}
+
+public class CommonMovement
+{
+    public static List<Vector2> dir4 = new List<Vector2>();
+    public static List<Vector2> dir8 = new List<Vector2>();
+
+    static CommonMovement()
+    {
+        Vector2[] d4 = { new Vector2(0, -1), new Vector2(0, 1), new Vector2(1, 0), new Vector2(-1, 0) };
+        Vector2[] d8 = { new Vector2(1, 1), new Vector2(-1, -1), new Vector2(1, -1), new Vector2(-1, 1) };
+
+        foreach (var d in d4)
+        {
+            dir4.Add(d);
+            dir8.Add(d);
+        }
+        foreach(var d in d8)
+        {
+            dir8.Add(d);
+        }
     }
 }

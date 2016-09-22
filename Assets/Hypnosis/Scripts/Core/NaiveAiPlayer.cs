@@ -65,7 +65,7 @@ public class NaiveAiPlayer : Player
             List<Cell> shortestPath = null;
             foreach (var potentialDestination in potentialDestinations)
             {
-                var path = unit.FindPath(_cellGrid.Cells, potentialDestination);
+                var path = unit.FindPath(_cellGrid.CellMap, potentialDestination);
                 if ((shortestPath == null && path.Sum(h => h.MovementCost) > 0) || shortestPath != null && (path.Sum(h => h.MovementCost) < shortestPath.Sum(h => h.MovementCost) && path.Sum(h => h.MovementCost) > 0))
                     shortestPath = path;
 
@@ -85,7 +85,7 @@ public class NaiveAiPlayer : Player
             {      
                 foreach (var potentialDestination in shortestPath.Intersect(unit.GetAvailableDestinations(_cellGrid.CellMap)).OrderByDescending(h => h.GetDistance(unit.Cell)))
                 {
-                    var path = unit.FindPath(_cellGrid.Cells, potentialDestination);
+                    var path = unit.FindPath(_cellGrid.CellMap, potentialDestination);
                     var pathCost = path.Sum(h => h.MovementCost);
                     if (pathCost > 0 && pathCost <= 1)
                     {
