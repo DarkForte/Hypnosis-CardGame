@@ -364,6 +364,7 @@ public class CommonMovement
 {
     public static List<Vector2> dir4 = new List<Vector2>();
     public static List<Vector2> dir8 = new List<Vector2>();
+    public static List<Vector2> front3 = new List<Vector2>();
 
     static CommonMovement()
     {
@@ -379,5 +380,8 @@ public class CommonMovement
         {
             dir8.Add(d);
         }
+
+        Vector2[] front_direction = { new Vector2(0, 1), new Vector2(-1, 1), new Vector2(1, 1) };
+        front3.AddRange(front_direction);
     }
 }
