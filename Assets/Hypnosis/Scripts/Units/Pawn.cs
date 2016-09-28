@@ -8,9 +8,13 @@ class Pawn : GenericUnit
 {
     public override void InitializeMoveAndAttack()
     {
-        Moves = CommonMovement.front3;
-        if (PlayerNumber == 1)
-            Moves.ForEach(m => m = -m);
+        foreach(var m in CommonMovement.front3)
+        {
+            if (PlayerNumber == 0)
+                Moves.Add(m);
+            else
+                Moves.Add(-m);
+        }
 
         AttackMoves = CommonMovement.dir4;
     }

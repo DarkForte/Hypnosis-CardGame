@@ -8,18 +8,20 @@ public abstract class GenericUnit : Unit
     public string UnitName;
 
     private Coroutine PulseCoroutine;
+    private Vector3 originalScale;
 
     public override void Initialize()
     {
         base.Initialize();
         transform.position += new Vector3(0, 0, -0.1f);
+        originalScale = transform.localScale;
     }
 
     public override void OnUnitDeselected()
     {
         base.OnUnitDeselected();
         StopCoroutine(PulseCoroutine);
-        transform.localScale = new Vector3(1,1,1);
+        transform.localScale = originalScale;
     }
 
     public override void MarkAsAttacking(Unit other)

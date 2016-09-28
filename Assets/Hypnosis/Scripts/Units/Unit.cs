@@ -35,7 +35,7 @@ public abstract class Unit : MonoBehaviour
 
     public List<Buff> Buffs { get; private set; }
 
-    public int MaxHP { get; private set; }
+    public int MaxHP;
 
     /// <summary>
     /// Cell that the unit is currently occupying.
@@ -80,6 +80,7 @@ public abstract class Unit : MonoBehaviour
         HP = MaxHP;
 
         Moves = new List<Vector2>();
+        AttackMoves = new List<Vector2>();
 
         InitializeMoveAndAttack();
     }
@@ -150,16 +151,8 @@ public abstract class Unit : MonoBehaviour
     }
 
     /// <summary>
-    /// Method indicates if it is possible to attack unit given as parameter, from cell given as second parameter.
+    /// On default, it will get the enemies in range with 4-direction moves.
     /// </summary>
-    public virtual bool IsUnitAttackable(Unit other, Cell sourceCell)
-    {
-        if (sourceCell.GetDistance(other.Cell) <= AttackRange)
-            return true;
-
-        return false;
-    }
-
     public virtual List<Unit> GetEnemiesInRange(List<Unit> units)
     {
         List<Unit> ret = new List<Unit>();
@@ -181,9 +174,6 @@ public abstract class Unit : MonoBehaviour
     public virtual void DealDamage(Unit other)
     {
         if (isMoving)
-            return;
-
-        if (!IsUnitAttackable(other, Cell))
             return;
 
         MarkAsAttacking(other);
