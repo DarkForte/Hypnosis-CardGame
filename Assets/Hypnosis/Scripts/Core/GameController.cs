@@ -170,6 +170,7 @@ public class GameController : MonoBehaviour
         Unit newUnit = newObject.GetComponent<Unit>();
         newUnit.PlayerNumber = CurrentPlayerNumber;
         newUnit.Cell = cell;
+        cell.OccupyingUnit = newUnit;
         newUnit.UnitClicked += OnUnitClicked;
         newUnit.UnitDestroyed += OnUnitDestroyed;
         newUnit.Initialize();

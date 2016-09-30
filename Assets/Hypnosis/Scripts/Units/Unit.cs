@@ -68,6 +68,9 @@ public abstract class Unit : MonoBehaviour
     /// </summary>
     public bool isMoving { get; set; }
 
+    public string UnitName;
+
+
     private static IPathfinding _pathfinder = new BFSPathFinder();
 
     /// <summary>
@@ -126,7 +129,7 @@ public abstract class Unit : MonoBehaviour
     /// </summary>
     protected virtual void OnDestroyed()
     {
-        Cell.IsTaken = false;
+        Cell.OccupyingUnit = null;
         MarkAsDestroyed();
         Destroy(gameObject);
     }
@@ -206,9 +209,9 @@ public abstract class Unit : MonoBehaviour
 
         var totalMovementCost = path.Sum(h => h.MovementCost);
 
-        Cell.IsTaken = false;
+        Cell.OccupyingUnit = null;
         Cell = destinationCell;
-        destinationCell.IsTaken = true;
+        destinationCell.OccupyingUnit = this;
 
         if (MovementSpeed > 0)
             StartCoroutine(MovementAnimation(path));

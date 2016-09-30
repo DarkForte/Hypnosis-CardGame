@@ -29,7 +29,7 @@ public class CustomObstacleGenerator : MonoBehaviour
             var cell = cells.OrderBy(h => Math.Abs((h.transform.position - obstacle.transform.position).magnitude)).First();
             if (!cell.IsTaken)
             {
-                cell.IsTaken = true;
+                //cell.IsTaken = true;
                 Vector3 offset = new Vector3(0, 0, cell.GetCellDimensions().z);
                 obstacle.position = cell.transform.position - offset;
             }

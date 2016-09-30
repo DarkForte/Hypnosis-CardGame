@@ -22,7 +22,7 @@ public class CustomUnitGenerator : MonoBehaviour, IUnitGenerator
                 var cell = cells.OrderBy(h => Math.Abs((h.transform.position - unit.transform.position).magnitude)).First();
                 if (!cell.IsTaken)
                 {
-                    cell.IsTaken = true;
+                    cell.OccupyingUnit = unit;
                     unit.Cell = cell;
                     unit.transform.position = cell.transform.position;
                     unit.Initialize();

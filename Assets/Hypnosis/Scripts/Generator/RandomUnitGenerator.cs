@@ -25,7 +25,7 @@ class RandomUnitGenerator : MonoBehaviour, IUnitGenerator
             {
                 var cell = freeCells.ElementAt(0);
                 freeCells.RemoveAt(0);
-                cell.GetComponent<Cell>().IsTaken = true;
+               // cell.GetComponent<Cell>().IsTaken = true;
 
                 var unit = Instantiate(UnitPrefab);
                 unit.transform.position = cell.transform.position + new Vector3(0, 0, 0);

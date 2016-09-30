@@ -12,11 +12,17 @@ public abstract class Cell : MonoBehaviour, IGraphNode
     /// <summary>
     /// Indicates if something is occupying the cell.
     /// </summary>
-    public bool IsTaken;
+    public bool IsTaken
+    {
+        get { return OccupyingUnit != null; }
+    }
     /// <summary>
     /// Cost of moving through the cell.
     /// </summary>
     public int MovementCost;
+
+    [HideInInspector]
+    public Unit OccupyingUnit;
 
     /// <summary>
     /// CellClicked event is invoked when user clicks the unit. It requires a collider on the cell game object to work.

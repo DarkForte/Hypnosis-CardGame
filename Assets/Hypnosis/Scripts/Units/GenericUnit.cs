@@ -5,7 +5,6 @@ using UnityEngine;
 
 public abstract class GenericUnit : Unit
 {
-    public string UnitName;
 
     private Coroutine PulseCoroutine;
     private Vector3 originalScale;
