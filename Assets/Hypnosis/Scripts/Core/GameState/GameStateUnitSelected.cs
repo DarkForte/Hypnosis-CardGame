@@ -63,26 +63,37 @@ class GameStateUnitSelected : GameState
             _unit.Move(cell, path);
             _gameController.EndTurn();
         }
-        else //SUMMON
-        {
-            
-        }
+
     }
+
+    /// <summary>
+    /// Pointing at the 2nd target.
+    /// </summary>
+    /// <param name="unit"></param>
     public override void OnUnitClicked(Unit unit)
     {
-        if (_nowAction != CardType.ATTACK)
+        if (_nowAction != CardType.ATTACK && _nowAction !=CardType.SPECIAL)
             return;
 
         if (unit.Equals(_unit) || unit.isMoving)
             return;
 
-        if (_unitsInRange.Contains(unit))
+        if(_nowAction == CardType.ATTACK)
         {
-            _unit.DealDamage(unit);
-            _gameController.EndTurn();
+            if (_unitsInRange.Contains(unit))
+            {
+                _unit.DealDamage(unit);
+                _gameController.EndTurn();
+            }
+        }
+        else
+        {
+
         }
 
-        if (unit.PlayerNumber.Equals(_unit.PlayerNumber))
+
+
+        if (unit.PlayerNumber.Equals(_unit.PlayerNumber)) //Change the 1st target
         {
             _gameController.GameState = new GameStateUnitSelected(_gameController, unit, _nowAction);
         }
