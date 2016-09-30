@@ -14,4 +14,8 @@ public class CardHelper
     {
         return (int)card <= 2;
     }
+    public static int convertToPrefabIndex(CardType card)
+    {
+        return (int)card - 3;
+    }
 }

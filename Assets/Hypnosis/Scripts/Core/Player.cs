@@ -35,13 +35,11 @@ public abstract class Player : MonoBehaviour
     {
         CardPool = new List<CardType>();
         int i;
-        for(i=1; i<=Constants.CARD_POOL_SIZE/2; i++)
+        for(i=1; i<=Constants.CARD_POOL_SIZE/3; i++)
         {
             CardPool.Add(CardType.MOVE);
-        }
-        for(i=Constants.CARD_POOL_SIZE/2+1; i<=Constants.CARD_POOL_SIZE; i++)
-        {
             CardPool.Add(CardType.ATTACK);
+            CardPool.Add(CardType.YUREN);
         }
 
         ShuffleCardPool();

@@ -38,6 +38,7 @@ public class GameController : MonoBehaviour
 
     public Transform PlayersParent;
     public Transform CellParent;
+    public Transform UnitsParent;
 
     public List<Player> Players { get; private set; }
     public List<Cell> Cells { get; private set; }
@@ -157,6 +158,22 @@ public class GameController : MonoBehaviour
         CurrentPlayerNumber = FirstPlayerNumber;
         Debug.Log("Round Start! First player = " + FirstPlayerNumber);
         Players[CurrentPlayerNumber].Play(this);
+    }
+
+    public void SummonPrefab(CardType card, Cell cell)
+    {
+        GameObject summonPrefab = SpecialUnitPrefabs[CardHelper.convertToPrefabIndex(card)];
+        var newObject = Instantiate(summonPrefab);
+        newObject.transform.position = cell.transform.position;
+        newObject.transform.parent = UnitsParent;
+
+        Unit newUnit = newObject.GetComponent<Unit>();
+        newUnit.PlayerNumber = CurrentPlayerNumber;
+        newUnit.Cell = cell;
+        newUnit.UnitClicked += OnUnitClicked;
+        newUnit.UnitDestroyed += OnUnitDestroyed;
+        newUnit.Initialize();
+        Units.Add(newUnit);
     }
 
     /// <summary>
