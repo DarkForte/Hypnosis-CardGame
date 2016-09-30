@@ -44,6 +44,8 @@ public class GameController : MonoBehaviour
     public Dictionary<Vector2, Cell> CellMap { get; private set; }
     public List<Unit> Units { get; private set; }
 
+    public List<GameObject> SpecialUnitPrefabs;
+
     void Start()
     {
         Players = new List<Player>();

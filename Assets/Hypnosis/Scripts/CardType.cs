@@ -5,5 +5,13 @@ using System.Text;
 
 public enum CardType
 {
-    MOVE, ATTACK, YUREN
+    MOVE, ATTACK, SPECIAL, YUREN
+}
+
+public class CardHelper
+{
+    public static bool isBasic(CardType card)
+    {
+        return (int)card <= 2;
+    }
 }

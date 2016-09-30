@@ -45,13 +45,13 @@ public abstract class GenericUnit : Unit
 
         while (startTime + 0.25f > Time.time)
         {
-            transform.position = Vector3.Lerp(transform.position, transform.position + (direction / 50f), ((startTime + 0.25f) - Time.time));
+            transform.position = Vector3.Lerp(transform.position, transform.position + (direction / 5f), ((startTime + 0.25f) - Time.time));
             yield return 0;
         }
         startTime = Time.time;
         while (startTime + 0.25f > Time.time)
         {
-            transform.position = Vector3.Lerp(transform.position, transform.position - (direction / 50f), ((startTime + 0.25f) - Time.time));
+            transform.position = Vector3.Lerp(transform.position, transform.position - (direction / 5f), ((startTime + 0.25f) - Time.time));
             yield return 0;
         }
         transform.position = Cell.transform.position + new Vector3(0, 0, -0.1f);

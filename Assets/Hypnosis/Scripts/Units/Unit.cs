@@ -227,7 +227,7 @@ public abstract class Unit : MonoBehaviour
         {
             while (new Vector2(transform.position.x, transform.position.y) != new Vector2(cell.transform.position.x, cell.transform.position.y))
             {
-                transform.position = Vector3.MoveTowards(transform.position, new Vector3(cell.transform.position.x, cell.transform.position.y, transform.position.z), Time.deltaTime * MovementSpeed);
+                transform.position = Vector3.MoveTowards(transform.position, new Vector3(cell.transform.position.x, cell.transform.position.y, transform.position.z), Time.deltaTime * MovementSpeed * 8);
                 yield return 0;
             }
         }
