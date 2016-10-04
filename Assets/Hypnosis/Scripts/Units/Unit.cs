@@ -51,6 +51,7 @@ public abstract class Unit : MonoBehaviour
     public int AttackRange;
     public int AttackPower;
 
+    [HideInInspector]
     public bool SpecialUsed;
     public abstract void SpecialMove(GameController gameController);
 
@@ -121,11 +122,8 @@ public abstract class Unit : MonoBehaviour
     /// </summary>
     public virtual void OnTurnEnd()
     {
-        Buffs.FindAll(b => b.Duration == 0).ForEach(b => { b.Undo(this); });
-        Buffs.RemoveAll(b => b.Duration == 0);
-        Buffs.ForEach(b => { b.Duration--; });
-
         SetState(new UnitStateNormal(this));
+        Buffs.ForEach(buff => buff.Apply(this));
     }
     /// <summary>
     /// Method is called when units HP drops below 1.
@@ -152,6 +150,7 @@ public abstract class Unit : MonoBehaviour
     public virtual void OnUnitDeselected()
     {
         SetState(new UnitStateMarkedAsFriendly(this));
+        Buffs.ForEach(buff => buff.Apply(this));
         if (UnitDeselected != null)
             UnitDeselected.Invoke(this, new EventArgs());
     }
@@ -192,6 +191,11 @@ public abstract class Unit : MonoBehaviour
     protected virtual void Defend(Unit other, int damage)
     {
         MarkAsDefending(other);
+        if(Buffs.Find(buff => buff is Invincible) != null)
+        {
+            return;
+        }
+
         HP -= Mathf.Clamp(damage - DefenceFactor, 1, damage);  //Damage is calculated by subtracting attack factor of attacker and defence factor of defender. If result is below 1, it is set to 1.
                                                                //This behaviour can be overridden in derived classes.
         if (UnitAttacked != null)
@@ -289,6 +293,19 @@ public abstract class Unit : MonoBehaviour
         }
         return ret;
     }
+
+    public void AddBuff(Buff buff)
+    {
+        Buffs.Add(buff);
+        buff.Apply(this);
+    }
+
+    public void RemoveBuff(Buff buff)
+    {
+        Buffs.Remove(buff);
+        buff.Undo(this);
+    }
+
     /// <summary>
     /// Gives visual indication that the unit is under attack.
     /// </summary>
@@ -321,6 +338,9 @@ public abstract class Unit : MonoBehaviour
     /// Method marks unit to indicate user that he can't do anything more with it this turn.
     /// </summary>
     public abstract void MarkAsFinished();
+
+    public abstract void MarkAsInvincible();
+
     /// <summary>
     /// Method returns the unit to its base appearance
     /// </summary>

@@ -1,0 +1,76 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+class GameStateMoveOrAttack : GameStateUnitSelected
+{
+    public GameStateMoveOrAttack(GameController gameController, Unit unit, CardType nowAction) : base(gameController, unit, nowAction)
+    {
+    }
+
+    public override void OnStateEnter()
+    {
+        base.OnStateEnter();
+        if (_nowAction == CardType.MOVE)
+        {
+            _pathsInRange = _unit.GetAvailableDestinations(_gameController.CellMap);
+            var cellsNotInRange = _gameController.Cells.Except(_pathsInRange);
+
+            foreach (var cell in cellsNotInRange)
+            {
+                cell.UnMark();
+            }
+            foreach (var cell in _pathsInRange)
+            {
+                cell.MarkAsReachable();
+            }
+        }
+        else if (_nowAction == CardType.ATTACK)
+        {
+            _unitsInRange = _unit.GetEnemiesInRange(_gameController.Units);
+            _unitsInRange.ForEach(e => e.SetState(new UnitStateMarkedAsReachableEnemy(e)));
+        }
+    }
+
+    public override void OnCellClicked(Cell cell)
+    {
+        base.OnCellClicked(cell);
+        if (_nowAction == CardType.ATTACK)
+            return;
+
+        if (cell.IsTaken || !_pathsInRange.Contains(cell))
+        {
+            _gameController.GameState = new GameStateWaitingInput(_gameController, _nowAction);
+            return;
+        }
+
+        if (_nowAction == CardType.MOVE)
+        {
+            var path = _unit.FindPath(_gameController.CellMap, cell);
+            _unit.Move(cell, path);
+            _gameController.EndTurn();
+        }
+    }
+
+    public override void OnUnitClicked(Unit unit)
+    {
+        base.OnUnitClicked(unit);
+        if (_nowAction == CardType.MOVE)
+            return;
+        if (unit.PlayerNumber.Equals(_unit.PlayerNumber)) //Change the 1st target
+        {
+            _gameController.GameState = new GameStateMoveOrAttack(_gameController, unit, _nowAction);
+        }
+
+        if (_nowAction == CardType.ATTACK)
+        {
+            if (_unitsInRange.Contains(unit))
+            {
+                _unit.DealDamage(unit);
+                _gameController.EndTurn();
+            }
+        }
+    }
+}
+

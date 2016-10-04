@@ -1,24 +1,24 @@
 ﻿/// <summary>
 /// Buff represents an "upgrade" to a unit.
 /// </summary>
-public interface Buff
+public abstract class Buff
 {
     /// <summary>
     /// Determines how long the buff should last (expressed in turns). If set to negative number, buff will be permanent.
     /// </summary>
-    int Duration { get; set; }
+    public int Duration;
+
+    public Buff(int duration)
+    {
+        Duration = duration;
+    }
 
     /// <summary>
     /// Describes how the unit should be upgraded.
     /// </summary>
-    void Apply(Unit unit);
+    public abstract void Apply(Unit unit);
     /// <summary>
     /// Returns units stats to normal.
     /// </summary>
-    void Undo(Unit unit);
-
-    /// <summary>
-    /// Returns deep copy of the object.
-    /// </summary>
-    Buff Clone();
+    public abstract void Undo(Unit unit);
 }

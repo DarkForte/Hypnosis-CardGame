@@ -6,15 +6,20 @@ using UnityEngine;
 
 class Pawn : GenericUnit
 {
+    public override void Initialize()
+    {
+        base.Initialize();
+        SpecialUsed = true;
+    }
+
     public override void InitializeMoveAndAttack()
     {
-        foreach(var m in CommonMovement.front3)
-        {
-            if (PlayerNumber == 0)
-                Moves.Add(m);
-            else
-                Moves.Add(-m);
-        }
+        Moves.Add(new Vector2(1, 0));
+        Moves.Add(new Vector2(-1, 0));
+        if (PlayerNumber == 0)
+            Moves.Add(new Vector2(0, 1));
+        else
+            Moves.Add(new Vector2(0, -1));
 
         AttackMoves = CommonMovement.dir4;
     }

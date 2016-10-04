@@ -114,6 +114,11 @@ public abstract class GenericUnit : Unit
         SetColor(Color.white);
     }
 
+    public override void MarkAsInvincible()
+    {
+        SetColor(Color.cyan);
+    }
+
     private void SetColor(Color color)
     {
         var _renderer = GetComponent<SpriteRenderer>();

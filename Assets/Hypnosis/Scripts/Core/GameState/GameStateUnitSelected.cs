@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-class GameStateUnitSelected : GameState
+abstract class GameStateUnitSelected : GameState
 {
     protected Unit _unit;
     protected CardType _nowAction;
@@ -22,48 +22,12 @@ class GameStateUnitSelected : GameState
         base.OnStateEnter();
 
         _unit.OnUnitSelected();
-
-        if(_nowAction == CardType.MOVE)
-        {
-            _pathsInRange = _unit.GetAvailableDestinations(_gameController.CellMap);
-            var cellsNotInRange = _gameController.Cells.Except(_pathsInRange);
-
-            foreach (var cell in cellsNotInRange)
-            {
-                cell.UnMark();
-            }
-            foreach (var cell in _pathsInRange)
-            {
-                cell.MarkAsReachable();
-            }
-        }
-        else if(_nowAction == CardType.ATTACK)
-        {
-            _unitsInRange = _unit.GetEnemiesInRange(_gameController.Units);
-            _unitsInRange.ForEach(e => e.MarkAsReachableEnemy());
-        }
     }
 
     public override void OnCellClicked(Cell cell)
     {
         if(_unit.isMoving)
             return;
-        if (_nowAction == CardType.ATTACK)
-            return;
-
-        if(cell.IsTaken || !_pathsInRange.Contains(cell))
-        {
-            _gameController.GameState = new GameStateWaitingInput(_gameController, _nowAction);
-            return;
-        }
-            
-        if(_nowAction == CardType.MOVE)
-        {
-            var path = _unit.FindPath(_gameController.CellMap, cell);
-            _unit.Move(cell, path);
-            _gameController.EndTurn();
-        }
-
     }
 
     /// <summary>
@@ -72,25 +36,8 @@ class GameStateUnitSelected : GameState
     /// <param name="unit"></param>
     public override void OnUnitClicked(Unit unit)
     {
-        if (_nowAction != CardType.ATTACK && _nowAction !=CardType.SPECIAL)
-            return;
-
         if (unit.Equals(_unit) || unit.isMoving)
             return;
-
-        if(_nowAction == CardType.ATTACK)
-        {
-            if (_unitsInRange.Contains(unit))
-            {
-                _unit.DealDamage(unit);
-                _gameController.EndTurn();
-            }
-        }
-
-        if (unit.PlayerNumber.Equals(_unit.PlayerNumber)) //Change the 1st target
-        {
-            _gameController.GameState = new GameStateUnitSelected(_gameController, unit, _nowAction);
-        }
             
     }
     public override void OnCellDeselected(Cell cell)

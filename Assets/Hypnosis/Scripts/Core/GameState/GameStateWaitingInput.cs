@@ -36,10 +36,11 @@ class GameStateWaitingInput : GameState
         {
             if(NowAction == CardType.SPECIAL)
             {
-                unit.SpecialMove(_gameController);
+                if(unit.SpecialUsed == false)
+                    unit.SpecialMove(_gameController);
             }
             else
-                _gameController.GameState = new GameStateUnitSelected(_gameController, unit, NowAction);
+                _gameController.GameState = new GameStateMoveOrAttack(_gameController, unit, NowAction);
 
         }
     }

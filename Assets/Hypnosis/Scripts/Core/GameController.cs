@@ -154,6 +154,21 @@ public class GameController : MonoBehaviour
             player.NowCards = nowCards;
             player.p_NowCards = 0;
         }
+        foreach(var unit in Units)
+        {
+            if(unit.Buffs.Count>0)
+            {
+                foreach (var buff in unit.Buffs)
+                {
+                    buff.Duration--;
+                }
+                List<Buff> buffToRemove = unit.Buffs.FindAll(buff => buff.Duration == 0);
+                foreach(var buff in buffToRemove)
+                {
+                    unit.RemoveBuff(buff);
+                }
+            }
+        }
         FirstPlayerNumber = 1 - FirstPlayerNumber;
         CurrentPlayerNumber = FirstPlayerNumber;
         Debug.Log("Round Start! First player = " + FirstPlayerNumber);
