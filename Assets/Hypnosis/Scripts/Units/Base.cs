@@ -10,5 +10,10 @@ class Base : GenericUnit
     {
         Steps = 0; // base cannot move
     }
+
+    public override void SpecialMove(GameController gameController)
+    {
+        
+    }
 }
 

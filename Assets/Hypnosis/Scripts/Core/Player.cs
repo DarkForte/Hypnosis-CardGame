@@ -38,7 +38,7 @@ public abstract class Player : MonoBehaviour
         for(i=1; i<=Constants.CARD_POOL_SIZE/3; i++)
         {
             CardPool.Add(CardType.MOVE);
-            CardPool.Add(CardType.ATTACK);
+            CardPool.Add(CardType.SPECIAL);
             CardPool.Add(CardType.YUREN);
         }
 

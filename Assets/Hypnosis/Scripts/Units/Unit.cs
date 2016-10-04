@@ -51,6 +51,9 @@ public abstract class Unit : MonoBehaviour
     public int AttackRange;
     public int AttackPower;
 
+    public bool SpecialUsed;
+    public abstract void SpecialMove(GameController gameController);
+
 
     /// <summary>
     /// Determines speed of movement animation.

@@ -3,10 +3,10 @@ using System.Linq;
 
 class GameStateUnitSelected : GameState
 {
-    private Unit _unit;
-    private CardType _nowAction;
-    private List<Cell> _pathsInRange;
-    private List<Unit> _unitsInRange;
+    protected Unit _unit;
+    protected CardType _nowAction;
+    protected List<Cell> _pathsInRange;
+    protected List<Unit> _unitsInRange;
 
 
     public GameStateUnitSelected(GameController gameController, Unit unit, CardType nowAction) : base(gameController)
@@ -86,12 +86,6 @@ class GameStateUnitSelected : GameState
                 _gameController.EndTurn();
             }
         }
-        else
-        {
-
-        }
-
-
 
         if (unit.PlayerNumber.Equals(_unit.PlayerNumber)) //Change the 1st target
         {

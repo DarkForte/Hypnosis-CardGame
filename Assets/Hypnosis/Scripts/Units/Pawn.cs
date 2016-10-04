@@ -19,5 +19,8 @@ class Pawn : GenericUnit
         AttackMoves = CommonMovement.dir4;
     }
 
-
+    public override void SpecialMove(GameController gameController)
+    {
+        
+    }
 }

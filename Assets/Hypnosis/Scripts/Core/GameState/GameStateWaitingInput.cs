@@ -33,7 +33,15 @@ class GameStateWaitingInput : GameState
             return;
 
         if(unit.PlayerNumber.Equals(_gameController.CurrentPlayerNumber))
-            _gameController.GameState = new GameStateUnitSelected(_gameController, unit, NowAction); 
+        {
+            if(NowAction == CardType.SPECIAL)
+            {
+                unit.SpecialMove(_gameController);
+            }
+            else
+                _gameController.GameState = new GameStateUnitSelected(_gameController, unit, NowAction);
+
+        }
     }
 
     //Deal with summon
