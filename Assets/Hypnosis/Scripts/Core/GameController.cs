@@ -39,6 +39,7 @@ public class GameController : MonoBehaviour
     public Transform PlayersParent;
     public Transform CellParent;
     public Transform UnitsParent;
+    public GameObject CardInterface;
 
     public List<Player> Players { get; private set; }
     public List<Cell> Cells { get; private set; }
@@ -136,12 +137,11 @@ public class GameController : MonoBehaviour
     {
         Players.ForEach(p => p.InitCardPool());
         GameState = new GameStateRoundStart(this);
-        StartRound();
     }
 
     public void StartRound()
     {
-        foreach(var player in Players)
+        foreach (var player in Players)
         {
             List<CardType> nowCandidates = player.DrawCards(5);
 
@@ -154,16 +154,16 @@ public class GameController : MonoBehaviour
             player.NowCards = nowCards;
             player.p_NowCards = 0;
         }
-        foreach(var unit in Units)
+        foreach (var unit in Units)
         {
-            if(unit.Buffs.Count>0)
+            if (unit.Buffs.Count > 0)
             {
                 foreach (var buff in unit.Buffs)
                 {
                     buff.Duration--;
                 }
                 List<Buff> buffToRemove = unit.Buffs.FindAll(buff => buff.Duration == 0);
-                foreach(var buff in buffToRemove)
+                foreach (var buff in buffToRemove)
                 {
                     unit.RemoveBuff(buff);
                 }
@@ -204,11 +204,15 @@ public class GameController : MonoBehaviour
         if(Players[CurrentPlayerNumber].p_NowCards == 3)
         {
             GameState = new GameStateRoundStart(this);
-            StartRound();
         }
         else
         {
             Players[CurrentPlayerNumber].Play(this);
         }
+    }
+
+    public void CardReady()
+    {
+        StartRound();
     }
 }

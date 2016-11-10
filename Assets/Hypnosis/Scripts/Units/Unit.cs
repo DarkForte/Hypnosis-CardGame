@@ -93,7 +93,6 @@ public abstract class Unit : MonoBehaviour
     }
     public abstract void InitializeMoveAndAttack();
 
-
     protected virtual void OnMouseDown()
     {
         if (UnitClicked != null)

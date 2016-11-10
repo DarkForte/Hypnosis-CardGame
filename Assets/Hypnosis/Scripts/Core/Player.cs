@@ -16,7 +16,7 @@ public abstract class Player : MonoBehaviour
     /// </summary>         
     public abstract void Play(GameController gameController);
 
-    private void ShuffleCardPool()
+    protected void ShuffleCardPool()
     {
         int i;
         int cnt = CardPool.Count;
