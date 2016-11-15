@@ -1,11 +1,14 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+using UnityEngine;
 
 class GameStateRoundStart : GameState
 {
+    public List<bool> cardReady = new List<bool>(1);
+
     public GameStateRoundStart(GameController gameController) : base(gameController)
     {
     }
@@ -13,15 +16,13 @@ class GameStateRoundStart : GameState
     public override void OnStateEnter()
     {
         base.OnStateEnter();
-        _gameController.CardInterface.SetActive(true);
-
-
     }
+
+
 
     public override void OnStateExit()
     {
         base.OnStateExit();
-        _gameController.CardInterface.SetActive(false);
     }
 }
 

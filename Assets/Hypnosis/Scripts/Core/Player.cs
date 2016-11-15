@@ -1,20 +1,21 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class Player : MonoBehaviour
 {
     public int PlayerNumber;
 
-    List<CardType> CardPool;
-    int p_CardPool;
-
-    public List<CardType> NowCards;
-    public int p_NowCards;
+    protected List<CardType> CardPool;
+    protected int p_CardPool;
+    public Queue<CardType> NowCards = new Queue<CardType>();
 
     /// <summary>
     /// Method is called every turn. Allows player to interact with his units.
     /// </summary>         
     public abstract void Play(GameController gameController);
+
+    public abstract IEnumerator SelectCard(GameController gameController);
 
     protected void ShuffleCardPool()
     {
@@ -51,14 +52,4 @@ public abstract class Player : MonoBehaviour
         return;
     }
 
-    public List<CardType> DrawCards(int number)
-    {
-        List<CardType> ret = new List<CardType>();
-        for(int i = 1; i <= number; i++)
-        {
-            ret.Add(CardPool[p_CardPool]);
-            p_CardPool++;
-        }
-        return ret;
-    } 
 }

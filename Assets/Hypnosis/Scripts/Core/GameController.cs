@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using System.Collections;
 
 /// <summary>
 /// GameController class keeps track of the game, stores cells, units and players objects. It starts the game and makes turn transitions. 
@@ -33,7 +34,9 @@ public class GameController : MonoBehaviour
     {
         get { return Players[CurrentPlayerNumber]; }
     }
-    public int CurrentPlayerNumber { get; private set; }
+
+    [HideInInspector]
+    public int CurrentPlayerNumber;
     public int FirstPlayerNumber;
 
     public Transform PlayersParent;
@@ -47,6 +50,7 @@ public class GameController : MonoBehaviour
     public List<Unit> Units { get; private set; }
 
     public List<GameObject> SpecialUnitPrefabs;
+    public List<GameObject> CardPrefabs;
 
     void Start()
     {
@@ -137,42 +141,7 @@ public class GameController : MonoBehaviour
     {
         Players.ForEach(p => p.InitCardPool());
         GameState = new GameStateRoundStart(this);
-    }
-
-    public void StartRound()
-    {
-        foreach (var player in Players)
-        {
-            List<CardType> nowCandidates = player.DrawCards(5);
-
-            List<CardType> nowCards = new List<CardType>();
-            for (int j = 0; j < 3; j++)
-            {
-                nowCards.Add(nowCandidates[j]);
-            }
-
-            player.NowCards = nowCards;
-            player.p_NowCards = 0;
-        }
-        foreach (var unit in Units)
-        {
-            if (unit.Buffs.Count > 0)
-            {
-                foreach (var buff in unit.Buffs)
-                {
-                    buff.Duration--;
-                }
-                List<Buff> buffToRemove = unit.Buffs.FindAll(buff => buff.Duration == 0);
-                foreach (var buff in buffToRemove)
-                {
-                    unit.RemoveBuff(buff);
-                }
-            }
-        }
-        FirstPlayerNumber = 1 - FirstPlayerNumber;
-        CurrentPlayerNumber = FirstPlayerNumber;
-        Debug.Log("Round Start! First player = " + FirstPlayerNumber);
-        Players[CurrentPlayerNumber].Play(this);
+        StartCoroutine(StartRound());
     }
 
     public void SummonPrefab(CardType card, Cell cell)
@@ -201,9 +170,10 @@ public class GameController : MonoBehaviour
 
         CurrentPlayerNumber = (CurrentPlayerNumber + 1) % NumberOfPlayers;
 
-        if(Players[CurrentPlayerNumber].p_NowCards == 3)
+        if(Players[CurrentPlayerNumber].NowCards.Count()==0)
         {
             GameState = new GameStateRoundStart(this);
+            StartCoroutine(StartRound());
         }
         else
         {
@@ -211,8 +181,49 @@ public class GameController : MonoBehaviour
         }
     }
 
+    public bool localCardReady, remoteCardReady;
+    IEnumerator StartRound()
+    {
+        localCardReady = false;
+        remoteCardReady = false;
+
+        foreach (var unit in Units)
+        {
+            if (unit.Buffs.Count > 0)
+            {
+                foreach (var buff in unit.Buffs)
+                {
+                    buff.Duration--;
+                }
+                List<Buff> buffToRemove = unit.Buffs.FindAll(buff => buff.Duration == 0);
+                foreach (var buff in buffToRemove)
+                {
+                    unit.RemoveBuff(buff);
+                }
+            }
+        }
+
+        foreach (var player in Players)
+        {
+            StartCoroutine(player.SelectCard(this));
+        }
+
+        yield return new WaitUntil(() => localCardReady && remoteCardReady);
+
+        Debug.Log("WaitUntil Passed!");
+
+        FirstPlayerNumber = 1 - FirstPlayerNumber;
+        CurrentPlayerNumber = FirstPlayerNumber;
+        Debug.Log("Round Start! First player = " + FirstPlayerNumber);
+
+        Players[CurrentPlayerNumber].Play(this);
+    }
+
     public void CardReady()
     {
-        StartRound();
+        HumanPlayer humanPlayer = Players[0] as HumanPlayer;
+        humanPlayer.CardReady(CardInterface.transform.GetChild(0).Find("Bottom Panel"));
+        localCardReady = true;
+        CardInterface.SetActive(false);
     }
 }
