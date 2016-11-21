@@ -340,6 +340,8 @@ public abstract class Unit : MonoBehaviour
 
     public abstract void MarkAsInvincible();
 
+    public abstract void MarkAsFirstTargetLocked();
+
     /// <summary>
     /// Method returns the unit to its base appearance
     /// </summary>

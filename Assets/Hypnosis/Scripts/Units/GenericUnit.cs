@@ -119,6 +119,11 @@ public abstract class GenericUnit : Unit
         SetColor(Color.cyan);
     }
 
+    public override void MarkAsFirstTargetLocked()
+    {
+        SetColor(Color.magenta);
+    }
+
     private void SetColor(Color color)
     {
         var _renderer = GetComponent<SpriteRenderer>();

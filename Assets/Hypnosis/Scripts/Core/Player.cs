@@ -36,13 +36,14 @@ public abstract class Player : MonoBehaviour
     {
         CardPool = new List<CardType>();
         int i;
-        for(i=1; i<=Constants.CARD_POOL_SIZE/5; i++)
+        for(i=1; i<=Constants.CARD_POOL_SIZE/6; i++)
         {
             CardPool.Add(CardType.MOVE);
             CardPool.Add(CardType.SPECIAL);
             CardPool.Add(CardType.YUREN);
             CardPool.Add(CardType.XIARUI);
             CardPool.Add(CardType.ATTACK);
+            CardPool.Add(CardType.JIZI);
         }
 
         ShuffleCardPool();
@@ -52,4 +53,9 @@ public abstract class Player : MonoBehaviour
         return;
     }
 
+    public Unit LockedUnitFirst(List<Unit> units)
+    {
+        List<Unit> myUnits = units.FindAll(unit => unit.PlayerNumber == PlayerNumber);
+        return myUnits.Find(unit => unit.Buffs.Find(buff => buff is FirstTargetLocked) != null);
+    }
 }

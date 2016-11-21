@@ -181,6 +181,7 @@ public class GameController : MonoBehaviour
         }
     }
 
+    [HideInInspector]
     public bool localCardReady, remoteCardReady;
     IEnumerator StartRound()
     {

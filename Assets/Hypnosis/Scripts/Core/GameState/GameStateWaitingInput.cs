@@ -6,6 +6,7 @@ class GameStateWaitingInput : GameState
 {
     CardType NowAction;
     List<Cell> availableSummonCells = new List<Cell>();
+    Unit FirstLockedTarget = null;
 
     public override void OnStateEnter()
     {
@@ -24,12 +25,15 @@ class GameStateWaitingInput : GameState
     public GameStateWaitingInput(GameController gameController, CardType nowAction) : base(gameController)
     {
         NowAction = nowAction;
+        FirstLockedTarget = gameController.CurrentPlayer.LockedUnitFirst(gameController.Units);
         Debug.Log(nowAction);
     }
 
     public override void OnUnitClicked(Unit unit)
     {
         if (!CardHelper.isBasic(NowAction))
+            return;
+        if (FirstLockedTarget != null && unit != FirstLockedTarget)
             return;
 
         if(unit.PlayerNumber.Equals(_gameController.CurrentPlayerNumber))
