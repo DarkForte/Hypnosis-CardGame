@@ -43,6 +43,10 @@ public class GameController : MonoBehaviour
     public Transform CellParent;
     public Transform UnitsParent;
     public GameObject CardInterface;
+    public GameObject PassButton;
+    public GameObject PickCardButton;
+    public Transform CardPanelBottom;
+    public Transform CardPanelTop;
 
     public List<Player> Players { get; private set; }
     public List<Cell> Cells { get; private set; }
@@ -168,6 +172,21 @@ public class GameController : MonoBehaviour
     {
         GameState = new GameStateTurnChanging(this);
 
+        Transform cardPanel;
+        if (CurrentPlayerNumber == 0)
+            cardPanel = CardPanelBottom.GetChild(0);
+        else
+            cardPanel = CardPanelTop.GetChild(0);
+
+        foreach(Transform cell in cardPanel)
+        {
+            if (cell.childCount > 0)
+            {
+                cell.GetComponent<DragAndDropCell>().RemoveItem();
+                break;
+            }
+        }
+
         CurrentPlayerNumber = (CurrentPlayerNumber + 1) % NumberOfPlayers;
 
         if(Players[CurrentPlayerNumber].NowCards.Count()==0)
@@ -220,11 +239,19 @@ public class GameController : MonoBehaviour
         Players[CurrentPlayerNumber].Play(this);
     }
 
-    public void CardReady()
+    public void CardReadyButtonPressed()
     {
         HumanPlayer humanPlayer = Players[0] as HumanPlayer;
-        humanPlayer.CardReady(CardInterface.transform.GetChild(0).Find("Bottom Panel"));
-        localCardReady = true;
+        humanPlayer.CardReady(CardInterface.transform.GetChild(0).Find("Bottom Panel"), CardPanelBottom.GetChild(0));
         CardInterface.SetActive(false);
+        PassButton.SetActive(true);
+        localCardReady = true;
+
+    }
+
+    public void PickCardButtonPressed()
+    {
+        CardInterface.SetActive(true);
+        PickCardButton.SetActive(false);
     }
 }

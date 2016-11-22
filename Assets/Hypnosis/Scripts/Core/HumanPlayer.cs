@@ -36,17 +36,23 @@ class HumanPlayer : Player
             dragCell.PlaceItem(cardObject);
         }
 
-        gameController.CardInterface.SetActive(true);
+        gameController.PassButton.SetActive(false);
+        gameController.PickCardButton.SetActive(true);
 
         yield return null;
     }
 
-    public void CardReady(Transform bottomPanel)
+    public void CardReady(Transform bottomPanel, Transform displayPanel)
     {
+        int i = 0;
         foreach(Transform cell in bottomPanel)
         {
             GameObject card = cell.GetChild(0).gameObject;
             NowCards.Enqueue(card.GetComponent<DraggingCard>().type);
+
+            DragAndDropCell displayCell = displayPanel.GetChild(i).gameObject.GetComponent<DragAndDropCell>();
+            displayCell.PlaceItem(card);
+            i++;
         }
 
 

@@ -27,12 +27,6 @@ public abstract class Unit : MonoBehaviour
     public event EventHandler<AttackEventArgs> UnitDestroyed;
     public event EventHandler<MovementEventArgs> UnitMoved;
 
-    public UnitState UnitState { get; set; }
-    public void SetState(UnitState state)
-    {
-        UnitState.MakeTransition(state);
-    }
-
     public List<Buff> Buffs { get; private set; }
 
     public int MaxHP;
@@ -61,7 +55,6 @@ public abstract class Unit : MonoBehaviour
     /// </summary>
     public float MovementSpeed;
 
-
     /// <summary>
     /// Indicates the player that the unit belongs to. Should correspoond with PlayerNumber variable on Player script.
     /// </summary>
@@ -83,7 +76,6 @@ public abstract class Unit : MonoBehaviour
     public virtual void Initialize()
     {
         Buffs = new List<Buff>();
-        UnitState = new UnitStateNormal(this);
         HP = MaxHP;
 
         Moves = new List<Vector2>();
@@ -114,14 +106,12 @@ public abstract class Unit : MonoBehaviour
     /// </summary>
     public virtual void OnTurnStart()
     {
-        SetState(new UnitStateMarkedAsFriendly(this));
     }
     /// <summary>
     /// Method is called at the end of each turn.
     /// </summary>
     public virtual void OnTurnEnd()
     {
-        SetState(new UnitStateNormal(this));
         Buffs.ForEach(buff => buff.Apply(this));
     }
     /// <summary>
@@ -139,7 +129,7 @@ public abstract class Unit : MonoBehaviour
     /// </summary>
     public virtual void OnUnitSelected()
     {
-        SetState(new UnitStateMarkedAsSelected(this));
+        MarkAsSelected();
         if (UnitSelected != null)
             UnitSelected.Invoke(this, new EventArgs());
     }
@@ -148,7 +138,7 @@ public abstract class Unit : MonoBehaviour
     /// </summary>
     public virtual void OnUnitDeselected()
     {
-        SetState(new UnitStateMarkedAsFriendly(this));
+        MarkAsFriendly();
         Buffs.ForEach(buff => buff.Apply(this));
         if (UnitDeselected != null)
             UnitDeselected.Invoke(this, new EventArgs());
@@ -346,6 +336,9 @@ public abstract class Unit : MonoBehaviour
     /// Method returns the unit to its base appearance
     /// </summary>
     public abstract void UnMark();
+
+    public abstract void UnMarkAsReachableEnemy();
+
 }
 
 public class MovementEventArgs : EventArgs

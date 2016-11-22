@@ -29,7 +29,7 @@ class GameStateMoveOrAttack : GameStateUnitSelected
         else if (_nowAction == CardType.ATTACK)
         {
             _unitsInRange = _unit.GetEnemiesInRange(_gameController.Units);
-            _unitsInRange.ForEach(e => e.SetState(new UnitStateMarkedAsReachableEnemy(e)));
+            _unitsInRange.ForEach(e => e.MarkAsReachableEnemy());
         }
     }
 

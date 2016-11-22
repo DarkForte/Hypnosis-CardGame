@@ -71,7 +71,7 @@ abstract class GameStateUnitSelected : GameState
         foreach (var unit in _unitsInRange)
         {
             if (unit == null) continue;
-            unit.SetState(new UnitStateNormal(unit));
+            unit.UnMarkAsReachableEnemy();
         }
         foreach (var cell in _gameController.Cells)
         {

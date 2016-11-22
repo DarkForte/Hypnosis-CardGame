@@ -5,8 +5,8 @@ using UnityEngine;
 
 public abstract class GenericUnit : Unit
 {
-
     private Coroutine PulseCoroutine;
+    private Coroutine RepeatGlowCoroutine;
     private Vector3 originalScale;
 
     public override void Initialize()
@@ -33,6 +33,51 @@ public abstract class GenericUnit : Unit
     }
     public override void MarkAsDestroyed()
     {
+    }
+
+    public override void MarkAsFriendly()
+    {
+        
+    }
+    public override void MarkAsReachableEnemy()
+    {
+        RepeatGlowCoroutine = StartCoroutine(RepeatGlow(new Color(1, 1, 1, 0.5f), 1, 0.5f));
+    }
+    public override void UnMarkAsReachableEnemy()
+    {
+        StopCoroutine(RepeatGlowCoroutine);
+        transform.Find("Marker").GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0);
+    }
+    public override void MarkAsSelected()
+    {
+        PulseCoroutine = StartCoroutine(Pulse(1.0f, 0.5f, 1.25f));
+    }
+    public override void MarkAsFinished()
+    {
+        
+    }
+    public override void UnMark()
+    {
+        SetColor(Color.white);
+    }
+
+    public override void MarkAsInvincible()
+    {
+        SetColor(Color.cyan);
+    }
+
+    public override void MarkAsFirstTargetLocked()
+    {
+        SetColor(Color.magenta);
+    }
+
+    private void SetColor(Color color)
+    {
+        var _renderer = GetComponent<SpriteRenderer>();
+        if (_renderer != null)
+        {
+            _renderer.color = color;
+        }
     }
 
     private IEnumerator Jerk(Unit other)
@@ -63,7 +108,7 @@ public abstract class GenericUnit : Unit
 
         while (startTime + cooloutTime > Time.time)
         {
-            _renderer.color = Color.Lerp(new Color(1,1,1,0), color, (startTime + cooloutTime) - Time.time);
+            _renderer.color = Color.Lerp(new Color(1, 1, 1, 0), color, (startTime + cooloutTime) - Time.time);
             yield return 0;
         }
 
@@ -92,46 +137,26 @@ public abstract class GenericUnit : Unit
         }
     }
 
-    public override void MarkAsFriendly()
+    private IEnumerator RepeatGlow(Color color, float time, float delayTime)
     {
-        SetColor(new Color(0.8f, 1, 0.8f));
-    }
-    public override void MarkAsReachableEnemy()
-    {
-        SetColor(new Color(1,0.8f,0.8f));
-    }
-    public override void MarkAsSelected()
-    {
-        PulseCoroutine = StartCoroutine(Pulse(1.0f, 0.5f, 1.25f));
-        SetColor(new Color(0.8f, 0.8f, 1));
-    }
-    public override void MarkAsFinished()
-    {
-        SetColor(Color.gray);
-    }
-    public override void UnMark()
-    {
-        SetColor(Color.white);
-    }
+        var renderer = transform.Find("Marker").GetComponent<SpriteRenderer>();
 
-    public override void MarkAsInvincible()
-    {
-        SetColor(Color.cyan);
-    }
-
-    public override void MarkAsFirstTargetLocked()
-    {
-        SetColor(Color.magenta);
-    }
-
-    private void SetColor(Color color)
-    {
-        var _renderer = GetComponent<SpriteRenderer>();
-        if (_renderer != null)
+        while(true)
         {
-            _renderer.color = color;
+            float growingTime = Time.time;
+            while(Time.time < growingTime + delayTime)
+            {
+                renderer.color = Color.Lerp(new Color(1, 1, 1, 0), color, (growingTime + delayTime - Time.time)/delayTime);
+                yield return 0;
+            }
+
+            float fadingTime = Time.time;
+            while(Time.time < fadingTime + delayTime)
+            {
+                renderer.color = Color.Lerp(color, new Color(1, 1, 1, 0), (fadingTime + delayTime - Time.time)/delayTime);
+                yield return 0;
+            }
         }
     }
-
 }
 

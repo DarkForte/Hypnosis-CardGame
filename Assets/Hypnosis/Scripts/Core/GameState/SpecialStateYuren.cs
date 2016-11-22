@@ -13,6 +13,8 @@ class SpecialStateYuren : SpecialState
     {
         base.OnStateEnter();
         _unitsInRange = _unit.GetEnemiesInRange(_gameController.Units);
+        _unitsInRange.RemoveAll(unit => unit.name == "Base");
+
         _unitsInRange.ForEach(unit => unit.MarkAsReachableEnemy());
     }
 
