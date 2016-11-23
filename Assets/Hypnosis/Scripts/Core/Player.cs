@@ -36,7 +36,7 @@ public abstract class Player : MonoBehaviour
     {
         CardPool = new List<CardType>();
         int i;
-        for(i=1; i<=Constants.CARD_POOL_SIZE/6; i++)
+        for(i=1; i<=Constants.CARD_POOL_SIZE/7; i++)
         {
             CardPool.Add(CardType.MOVE);
             CardPool.Add(CardType.SPECIAL);
@@ -44,6 +44,7 @@ public abstract class Player : MonoBehaviour
             CardPool.Add(CardType.XIARUI);
             CardPool.Add(CardType.ATTACK);
             CardPool.Add(CardType.JIZI);
+            CardPool.Add(CardType.CHUSHUI);
         }
 
         ShuffleCardPool();

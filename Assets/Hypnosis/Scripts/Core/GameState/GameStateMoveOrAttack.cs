@@ -56,12 +56,13 @@ class GameStateMoveOrAttack : GameStateUnitSelected
     public override void OnUnitClicked(Unit unit)
     {
         base.OnUnitClicked(unit);
-        if (_nowAction == CardType.MOVE)
-            return;
         if (unit.PlayerNumber.Equals(_unit.PlayerNumber)) //Change the 1st target
         {
             _gameController.GameState = new GameStateMoveOrAttack(_gameController, unit, _nowAction);
         }
+
+        if (_nowAction == CardType.MOVE)
+            return;
 
         if (_nowAction == CardType.ATTACK)
         {
