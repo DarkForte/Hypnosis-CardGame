@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -27,5 +28,19 @@ class Pawn : GenericUnit
     public override void SpecialMove(GameController gameController)
     {
         
+    }
+
+    protected override void OnKillingOthers(Unit victim)
+    {
+        StartCoroutine(TakeUpCell(victim));
+    }
+
+    private IEnumerator TakeUpCell(Unit victim)
+    {
+        yield return new WaitWhile(() => isMoving);
+        List<Cell> path = new List<Cell>();
+        path.Add(victim.Cell);
+        path.Add(Cell);
+        Move(victim.Cell, path);
     }
 }

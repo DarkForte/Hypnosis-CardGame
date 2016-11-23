@@ -82,6 +82,7 @@ public abstract class GenericUnit : Unit
 
     private IEnumerator Jerk(Unit other)
     {
+        isMoving = true;
         GetComponent<SpriteRenderer>().sortingOrder = 6;
         var heading = other.transform.position - transform.position;
         var direction = heading / heading.magnitude;
@@ -100,6 +101,7 @@ public abstract class GenericUnit : Unit
         }
         transform.position = Cell.transform.position + new Vector3(0, 0, -0.1f);
         GetComponent<SpriteRenderer>().sortingOrder = 4;
+        isMoving = false;
     }
     private IEnumerator Glow(Color color, float cooloutTime)
     {

@@ -112,7 +112,6 @@ public abstract class Unit : MonoBehaviour
     /// </summary>
     public virtual void OnTurnEnd()
     {
-        Buffs.ForEach(buff => buff.Apply(this));
     }
     /// <summary>
     /// Method is called when units HP drops below 1.
@@ -122,6 +121,10 @@ public abstract class Unit : MonoBehaviour
         Cell.OccupyingUnit = null;
         MarkAsDestroyed();
         Destroy(gameObject);
+    }
+
+    protected virtual void OnKillingOthers(Unit victim)
+    {
     }
 
     /// <summary>
@@ -165,21 +168,21 @@ public abstract class Unit : MonoBehaviour
     /// <summary>
     /// Method deals damage to unit given as parameter.
     /// </summary>
-    public virtual void DealDamage(Unit other)
+    public virtual void DealDamage(Unit target)
     {
         if (isMoving)
             return;
 
-        MarkAsAttacking(other);
-        other.Defend(this, AttackPower);
+        MarkAsAttacking(target);
+        target.Defend(this, AttackPower);
 
     }
     /// <summary>
     /// Attacking unit calls Defend method on defending unit. 
     /// </summary>
-    protected virtual void Defend(Unit other, int damage)
+    protected virtual void Defend(Unit attacker, int damage)
     {
-        MarkAsDefending(other);
+        MarkAsDefending(attacker);
         if(Buffs.Find(buff => buff is Invincible) != null)
         {
             return;
@@ -188,13 +191,16 @@ public abstract class Unit : MonoBehaviour
         HP -= Mathf.Clamp(damage - DefenceFactor, 1, damage);  //Damage is calculated by subtracting attack factor of attacker and defence factor of defender. If result is below 1, it is set to 1.
                                                                //This behaviour can be overridden in derived classes.
         if (UnitAttacked != null)
-            UnitAttacked.Invoke(this, new AttackEventArgs(other, this, damage));
+            UnitAttacked.Invoke(this, new AttackEventArgs(attacker, this, damage));
 
         if (HP <= 0)
         {
             if (UnitDestroyed != null)
-                UnitDestroyed.Invoke(this, new AttackEventArgs(other, this, damage));
+                UnitDestroyed.Invoke(this, new AttackEventArgs(attacker, this, damage));
+
             OnDestroyed();
+
+            attacker.OnKillingOthers(this);
         }
     }
 
@@ -202,8 +208,6 @@ public abstract class Unit : MonoBehaviour
     {
         if (isMoving)
             return;
-
-        var totalMovementCost = path.Sum(h => h.MovementCost);
 
         Cell.OccupyingUnit = null;
         Cell = destinationCell;
