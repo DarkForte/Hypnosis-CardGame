@@ -180,8 +180,9 @@ public class GameController : MonoBehaviour
 
         foreach(Transform cell in cardPanel)
         {
-            if (cell.childCount > 0)
+            if(cell.childCount>0)
             {
+                //cell.GetChild(0).GetComponent<DraggingCard>().DeActivate();
                 cell.GetComponent<DragAndDropCell>().RemoveItem();
                 break;
             }
@@ -196,6 +197,7 @@ public class GameController : MonoBehaviour
         }
         else
         {
+            GetFirstCard(CurrentPlayerNumber).Activate();
             Players[CurrentPlayerNumber].Play(this);
         }
     }
@@ -230,12 +232,11 @@ public class GameController : MonoBehaviour
 
         yield return new WaitUntil(() => localCardReady && remoteCardReady);
 
-        Debug.Log("WaitUntil Passed!");
-
         FirstPlayerNumber = 1 - FirstPlayerNumber;
         CurrentPlayerNumber = FirstPlayerNumber;
         Debug.Log("Round Start! First player = " + FirstPlayerNumber);
 
+        GetFirstCard(CurrentPlayerNumber).Activate();
         Players[CurrentPlayerNumber].Play(this);
     }
 
@@ -253,5 +254,24 @@ public class GameController : MonoBehaviour
     {
         CardInterface.SetActive(true);
         PickCardButton.SetActive(false);
+    }
+
+    protected DraggingCard GetFirstCard(int playerNum)
+    {
+        Transform cardPanel;
+        if (playerNum == 0)
+            cardPanel = CardPanelBottom.GetChild(0);
+        else
+            cardPanel = CardPanelTop.GetChild(0);
+
+        foreach(Transform cell in cardPanel)
+        {
+            if(cell.childCount>0)
+            {
+                DraggingCard card = cell.GetChild(0).GetComponent<DraggingCard>();
+                return card;
+            }
+        }
+        return null;
     }
 }
