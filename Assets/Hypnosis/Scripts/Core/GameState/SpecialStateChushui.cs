@@ -11,7 +11,12 @@ class SpecialStateChushui : SpecialState
 
     public SpecialStateChushui(GameController gameController, Unit unit) : base(gameController, unit)
     {
-        _unitsInRange = gameController.Units.FindAll(u => u.PlayerNumber != _unit.PlayerNumber && u.name != "Base");
+    }
+
+    public override void OnStateEnter()
+    {
+        base.OnStateEnter();
+        _unitsInRange = _gameController.Units.FindAll(u => u.PlayerNumber != _unit.PlayerNumber && u.UnitName != "Base");
         _unitsInRange.ForEach(u => u.MarkAsReachableEnemy());
     }
 
@@ -20,12 +25,12 @@ class SpecialStateChushui : SpecialState
         if(choosingControl)
         {
             base.OnUnitClicked(unit);
-            if(unit.PlayerNumber != _unit.PlayerNumber)
+            if(unit.PlayerNumber != _unit.PlayerNumber) //Chose the controlling unit
             {
                 controlledUnit = unit;
                 _unitsInRange.ForEach(u => u.UnMarkAsReachableEnemy());
-                _unitsInRange = unit.GetEnemiesInRange(_gameController.Units);
-                _unitsInRange.RemoveAll(u => u.name == "Base");
+                _unitsInRange = unit.GetAllTargetsInRange(_gameController.CellMap);
+                _unitsInRange.RemoveAll(u => u.UnitName == "Base");
                 _unitsInRange.ForEach(u => u.MarkAsReachableEnemy());
                 choosingControl = false;
             }
@@ -41,12 +46,12 @@ class SpecialStateChushui : SpecialState
             }
             else
             {
-                if(unit.PlayerNumber == controlledUnit.PlayerNumber)
+                if(unit.PlayerNumber == controlledUnit.PlayerNumber) //Change the controlling unit
                 {
                     controlledUnit = unit;
                     _unitsInRange.ForEach(u => u.UnMarkAsReachableEnemy());
-                    _unitsInRange = unit.GetEnemiesInRange(_gameController.Units);
-                    _unitsInRange.RemoveAll(u => u.name == "Base");
+                    _unitsInRange = unit.GetAllTargetsInRange(_gameController.CellMap);
+                    _unitsInRange.RemoveAll(u => u.UnitName == "Base");
                     _unitsInRange.ForEach(u => u.MarkAsReachableEnemy());
                 }
             }

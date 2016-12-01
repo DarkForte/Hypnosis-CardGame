@@ -147,19 +147,26 @@ public abstract class Unit : MonoBehaviour
             UnitDeselected.Invoke(this, new EventArgs());
     }
 
-    /// <summary>
-    /// On default, it will get the enemies in range with 4-direction moves.
-    /// </summary>
-    public virtual List<Unit> GetEnemiesInRange(List<Unit> units)
+    public virtual List<Unit> GetEnemiesInRange(Dictionary<Vector2, Cell> cellMap)
+    {
+        return GetTargetsInRange(cellMap, true);
+    }
+
+    public virtual List<Unit> GetAllTargetsInRange(Dictionary<Vector2, Cell> cellMap)
+    {
+        return GetTargetsInRange(cellMap, false);
+    }
+
+    protected List<Unit> GetTargetsInRange(Dictionary<Vector2, Cell> cellMap, bool excludeFriend)
     {
         List<Unit> ret = new List<Unit>();
-        List<Unit> enemies = units.FindAll(u => u.PlayerNumber != PlayerNumber);
-
-        foreach (var currentUnit in enemies)
+        List<Cell> destinationCells = BFSDestinationFinder.FindCellsWithinSteps(cellMap, Cell, Moves, AttackRange, PlayerNumber, true, true, true);
+        foreach (Cell cell in destinationCells)
         {
-            if (Cell.GetDistance(currentUnit.Cell) <= AttackRange)
+            if (cell.IsTaken)
             {
-                ret.Add(currentUnit);
+                if(!excludeFriend || (excludeFriend && cell.OccupyingUnit.PlayerNumber != PlayerNumber))
+                    ret.Add(cell.OccupyingUnit);
             }
         }
         return ret;
@@ -257,7 +264,7 @@ public abstract class Unit : MonoBehaviour
     /// </summary>
     public virtual List<Cell> GetAvailableDestinations(Dictionary<Vector2, Cell> cellMap)
     {
-        return BFSDestinationFinder.FindCellsWithinSteps(cellMap, Cell, Moves, Steps);
+        return BFSDestinationFinder.FindCellsWithinSteps(cellMap, Cell, Moves, Steps, PlayerNumber, true, true, false);
     }
 
     public List<Cell> FindPath(Dictionary<Vector2, Cell> cellMap, Cell destination)
@@ -267,7 +274,7 @@ public abstract class Unit : MonoBehaviour
     /// <summary>
     /// Method returns graph representation of cell grid for pathfinding.
     /// </summary>
-    protected Dictionary<Cell, Dictionary<Cell, int>> GetGraphEdges(Dictionary<Vector2, Cell> cellMap, List<Vector2> movement)
+    protected Dictionary<Cell, Dictionary<Cell, int>> GetGraphEdges(Dictionary<Vector2, Cell> cellMap, List<Vector2> movement, bool pierceFriend=true, bool pierceEnemy=false)
     {
         Dictionary<Cell, Dictionary<Cell, int>> ret = new Dictionary<Cell, Dictionary<Cell, int>>();
         foreach (var cell in cellMap.Values)
@@ -277,10 +284,27 @@ public abstract class Unit : MonoBehaviour
             foreach (var nowDirection in Moves)
             {
                 Vector2 nowCoord = offset + nowDirection;
-                if (cellMap.ContainsKey(nowCoord) && cellMap[nowCoord].IsTaken == false)
+                if ( cellMap.ContainsKey(nowCoord) )
                 {
-                    Cell targetCell = cellMap[nowCoord];
-                    ret[cell][targetCell] = targetCell.MovementCost;
+                    if(cellMap[nowCoord].IsTaken == false)
+                    {
+                        Cell targetCell = cellMap[nowCoord];
+                        ret[cell][targetCell] = targetCell.MovementCost;
+                    }
+                    else
+                    {
+                        Unit takingUnit = cellMap[nowCoord].OccupyingUnit;
+                        if(pierceFriend && takingUnit.PlayerNumber == PlayerNumber)
+                        {
+                            Cell targetCell = cellMap[nowCoord];
+                            ret[cell][targetCell] = targetCell.MovementCost;
+                        }
+                        else if(pierceEnemy && takingUnit.PlayerNumber != PlayerNumber)
+                        {
+                            Cell targetCell = cellMap[nowCoord];
+                            ret[cell][targetCell] = targetCell.MovementCost;
+                        }
+                    }
                 }
             }
         }

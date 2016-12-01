@@ -12,8 +12,8 @@ class SpecialStateYuren : SpecialState
     public override void OnStateEnter()
     {
         base.OnStateEnter();
-        _unitsInRange = _unit.GetEnemiesInRange(_gameController.Units);
-        _unitsInRange.RemoveAll(unit => unit.name == "Base");
+        _unitsInRange = _unit.GetEnemiesInRange(_gameController.CellMap);
+        _unitsInRange.RemoveAll(unit => unit.UnitName == "Base");
 
         _unitsInRange.ForEach(unit => unit.MarkAsReachableEnemy());
     }

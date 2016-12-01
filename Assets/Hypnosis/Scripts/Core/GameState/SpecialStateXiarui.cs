@@ -13,7 +13,7 @@ class SpecialStateXiarui : SpecialState
     public override void OnStateEnter()
     {
         base.OnStateEnter();
-        _unitsInRange = _gameController.Units.FindAll(unit => unit.PlayerNumber == _unit.PlayerNumber && unit.name != "Base");
+        _unitsInRange = _gameController.Units.FindAll(unit => unit.PlayerNumber == _unit.PlayerNumber && unit.UnitName != "Base");
         _unitsInRange.ForEach(unit => unit.MarkAsReachableEnemy());
     }
 

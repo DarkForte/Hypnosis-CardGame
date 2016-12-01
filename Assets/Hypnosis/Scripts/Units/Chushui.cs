@@ -14,7 +14,7 @@ class Chushui : GenericUnit
 
     public override void SpecialMove(GameController gameController)
     {
-        throw new NotImplementedException();
+        gameController.GameState = new SpecialStateChushui(gameController, this);
     }
 }
 

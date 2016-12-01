@@ -6,7 +6,7 @@ using UnityEngine;
 
 class BFSDestinationFinder
 {
-    public static List<Cell> FindCellsWithinSteps(Dictionary<Vector2, Cell> cellMap, Cell start, List<Vector2> movements, int steps)
+    public static List<Cell> FindCellsWithinSteps(Dictionary<Vector2, Cell> cellMap, Cell start, List<Vector2> movements, int steps, int playerNum, bool pierceFriend = false, bool pierceEnemy = false, bool includeTakenCell=false)
     {
         List<Cell> ret = new List<Cell>();
 
@@ -22,16 +22,40 @@ class BFSDestinationFinder
             Vector2 nowCoord = nowPair.Key;
             int nowStep = nowPair.Value;
             if(nowCoord != start.OffsetCoord)
-                ret.Add(cellMap[nowCoord]);
-            
-            foreach(var nowMove in movements)
+            {
+                if(cellMap[nowCoord].IsTaken==false || includeTakenCell)
+                    ret.Add(cellMap[nowCoord]);
+            }
+
+            foreach (var nowMove in movements)
             {
                 Vector2 nextCoord = nowCoord + nowMove;
-                if(cellMap.ContainsKey(nextCoord) && !used.Contains(nextCoord) 
-                    && cellMap[nextCoord].IsTaken==false && nowStep + cellMap[nextCoord].MovementCost <= steps)
+                if(cellMap.ContainsKey(nextCoord) && !used.Contains(nextCoord) && nowStep + cellMap[nextCoord].MovementCost <= steps)
                 {
-                    q.Enqueue(new KeyValuePair<Vector2, int>(nextCoord, nowStep + cellMap[nextCoord].MovementCost));
-                    used.Add(nextCoord);
+                    bool add = false;
+
+                    if(cellMap[nextCoord].IsTaken==true)
+                    {
+                        Unit takingunit = cellMap[nextCoord].OccupyingUnit;
+                        if(takingunit.PlayerNumber == playerNum && pierceFriend)
+                        {
+                            add = true;
+                        }
+                        else if(takingunit.PlayerNumber != playerNum && pierceEnemy)
+                        {
+                            add = true;
+                        }
+                    }
+                    else
+                    {
+                        add = true;
+                    }
+
+                    if(add)
+                    {
+                        q.Enqueue(new KeyValuePair<Vector2, int>(nextCoord, nowStep + cellMap[nextCoord].MovementCost));
+                        used.Add(nextCoord);
+                    }
                 }
             }
         }
