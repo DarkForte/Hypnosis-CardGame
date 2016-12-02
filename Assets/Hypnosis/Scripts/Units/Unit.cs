@@ -220,7 +220,7 @@ public abstract class Unit : MonoBehaviour
         Cell = destinationCell;
         destinationCell.OccupyingUnit = this;
 
-        if (MovementSpeed > 0)
+        if (MovementSpeed > 0 && path != null)
             StartCoroutine(MovementAnimation(path));
         else
             transform.position = Cell.transform.position;
