@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 using System.Collections;
+using Photon;
 
 /// <summary>
 /// GameController class keeps track of the game, stores cells, units and players objects. It starts the game and makes turn transitions. 
 /// It reacts to user interacting with units or cells, and raises events related to game progress. 
 /// </summary>
-public class GameController : MonoBehaviour
+public class GameController : PunBehaviour
 {
     public event EventHandler GameEnded;
     
@@ -55,23 +56,16 @@ public class GameController : MonoBehaviour
 
     public List<GameObject> SpecialUnitPrefabs;
     public List<GameObject> CardPrefabs;
+    public GameObject LocalPlayer;
+    public GameObject RemotePlayer;
 
     void Start()
     {
         Players = new List<Player>();
-        for (int i = 0; i < PlayersParent.childCount; i++)
+        foreach(Transform playerTrans in PlayersParent)
         {
-            var player = PlayersParent.GetChild(i).GetComponent<Player>();
-            if (player != null)
-                Players.Add(player);
-            else
-                Debug.LogError("Invalid object in Players Parent game object");
+            Players.Add(playerTrans.GetComponent<Player>());
         }
-
-        Players.Sort( (p1, p2) => (p1.PlayerNumber < p2.PlayerNumber)? -1:1 );
-
-        NumberOfPlayers = Players.Count;
-        FirstPlayerNumber = NumberOfPlayers -1;
 
         Cells = new List<Cell>();
         CellMap = new Dictionary<Vector2, Cell>();
@@ -106,8 +100,8 @@ public class GameController : MonoBehaviour
         }
         else
             Debug.LogError("No IUnitGenerator script attached to cell grid");
-        
-        StartGame();
+
+        GameState = new GameStateGameOver(this);
     }
 
     private void OnCellDehighlighted(object sender, EventArgs e)
@@ -143,6 +137,9 @@ public class GameController : MonoBehaviour
     /// </summary>
     public void StartGame()
     {
+        NumberOfPlayers = Players.Count;
+        FirstPlayerNumber = PhotonNetwork.room.masterClientId;
+
         Players.ForEach(p => p.InitCardPool());
         GameState = new GameStateRoundStart(this);
         StartCoroutine(StartRound());
@@ -232,7 +229,7 @@ public class GameController : MonoBehaviour
 
         yield return new WaitUntil(() => localCardReady && remoteCardReady);
 
-        FirstPlayerNumber = 1 - FirstPlayerNumber;
+        FirstPlayerNumber = 3 - FirstPlayerNumber;
         CurrentPlayerNumber = FirstPlayerNumber;
         Debug.Log("Round Start! First player = " + FirstPlayerNumber);
 
@@ -273,5 +270,25 @@ public class GameController : MonoBehaviour
             }
         }
         return null;
+    }
+
+    public override void OnJoinedRoom()
+    {
+        if(PhotonNetwork.room.playerCount == 2)
+        { 
+            LocalPlayer.GetComponent<Player>().PlayerNumber = PhotonNetwork.player.ID;
+            RemotePlayer.GetComponent<Player>().PlayerNumber = PhotonNetwork.otherPlayers[0].ID;
+            StartGame();
+        }
+    }
+
+    public override void OnPhotonPlayerConnected(PhotonPlayer newPlayer)
+    {
+        if (PhotonNetwork.room.playerCount == 2)
+        {
+            LocalPlayer.GetComponent<Player>().PlayerNumber = PhotonNetwork.player.ID;
+            RemotePlayer.GetComponent<Player>().PlayerNumber = PhotonNetwork.otherPlayers[0].ID;
+            StartGame();
+        }
     }
 }

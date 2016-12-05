@@ -28,7 +28,7 @@ public abstract class GameState
     {
         if (_gameController.Units.Select(u => u.PlayerNumber).Distinct().ToList().Count == 1)
         {
-            _gameController.GameState = new CellGridStateGameOver(_gameController);
+            _gameController.GameState = new GameStateGameOver(_gameController);
         }
     }
     public virtual void OnStateExit()
