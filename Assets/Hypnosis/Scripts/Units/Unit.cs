@@ -228,12 +228,12 @@ public abstract class Unit : MonoBehaviour
         if (UnitMoved != null)
             UnitMoved.Invoke(this, new MovementEventArgs(Cell, destinationCell, path));
     }
-    protected virtual IEnumerator MovementAnimation(List<Cell> path)
+    protected virtual IEnumerator MovementAnimation(List<Cell> reversePath)
     {
         isMoving = true;
 
-        path.Reverse();
-        foreach (var cell in path)
+        reversePath.Reverse();
+        foreach (var cell in reversePath)
         {
             while (new Vector2(transform.position.x, transform.position.y) != new Vector2(cell.transform.position.x, cell.transform.position.y))
             {

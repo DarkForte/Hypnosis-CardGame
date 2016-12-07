@@ -60,4 +60,9 @@ public abstract class Player : MonoBehaviour
         List<Unit> myUnits = units.FindAll(unit => unit.PlayerNumber == PlayerNumber);
         return myUnits.Find(unit => unit.Buffs.Find(buff => buff is FirstTargetLocked) != null);
     }
+
+    public CardType TakeFirstCard()
+    {
+        return NowCards.Dequeue();
+    }
 }

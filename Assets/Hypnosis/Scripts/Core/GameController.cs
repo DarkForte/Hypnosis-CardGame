@@ -121,6 +121,14 @@ public class GameController : PunBehaviour, ITurnManagerCallbacks
 
         FirstPlayerNumber = PlayerNumberSum - PhotonNetwork.room.masterClientId;
 
+        foreach(Unit unit in Units)
+        {
+            if (unit.PlayerNumber == 0)
+                unit.PlayerNumber = LocalPlayer.PlayerNumber;
+            else
+                unit.PlayerNumber = RemotePlayer.PlayerNumber;
+        }
+
         Players.ForEach(p => p.InitCardPool());
         GameState = new GameStateRoundStart(this);
         StartCoroutine(StartRound());
@@ -151,7 +159,7 @@ public class GameController : PunBehaviour, ITurnManagerCallbacks
         GameState = new GameStateTurnChanging(this);
 
         Transform cardPanel;
-        if (CurrentPlayerNumber == 0)
+        if (CurrentPlayerNumber == LocalPlayer.PlayerNumber)
             cardPanel = CardPanelBottom.GetChild(0);
         else
             cardPanel = CardPanelTop.GetChild(0);
@@ -166,7 +174,7 @@ public class GameController : PunBehaviour, ITurnManagerCallbacks
             }
         }
 
-        CurrentPlayerNumber = (CurrentPlayerNumber + 1) % NumberOfPlayers;
+        CurrentPlayerNumber = PlayerNumberSum - CurrentPlayerNumber;
 
         if(CurrentPlayer.NowCards.Count()==0)
         {
@@ -236,6 +244,15 @@ public class GameController : PunBehaviour, ITurnManagerCallbacks
         PickCardButton.SetActive(false);
     }
 
+    public void PassButtonPressed()
+    {
+        if(CurrentPlayer == LocalPlayer)
+        {
+            TurnManager.SendMove(new Vector2[0]);
+            EndTurn();
+        }
+    }
+
     protected DraggingCard GetFirstCard(int playerNum)
     {
         Transform cardPanel;
@@ -303,9 +320,11 @@ public class GameController : PunBehaviour, ITurnManagerCallbacks
         }
     }
 
-    void ITurnManagerCallbacks.OnPlayerMove(PhotonPlayer player, int turn, object move)
+    void ITurnManagerCallbacks.OnPlayerMove(PhotonPlayer player, int turn, List<Vector2> move)
     {
-        throw new NotImplementedException();
+        Debug.Log("Received remote message: ");
+        move.ForEach(x => Debug.Log(x));
+        GameState.OnReceiveNetMessage(player, move);
     }
 
     void ITurnManagerCallbacks.OnPlayerChooseCard(PhotonPlayer player, List<CardType> cards)

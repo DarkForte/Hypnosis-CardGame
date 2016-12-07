@@ -99,6 +99,7 @@ public class TurnManager : PunBehaviour
     void Start()
     {
         PhotonNetwork.OnEventCall = OnEvent;
+        PhotonPeer.RegisterType(typeof(Vector2), (byte)'W', SerializeVector2, DeserializeVector2);
     }
 
     void Update()
@@ -133,7 +134,7 @@ public class TurnManager : PunBehaviour
 
         // the server won't send the event back to the origin (by default). to get the event, call it locally 
         // (note: the order of events might be mixed up as we do this locally)
-        OnEvent(evCode, moveHt, PhotonNetwork.player.ID);
+        //OnEvent(evCode, moveHt, PhotonNetwork.player.ID);
     }
 
     public void SendCard(List<CardType> cards)
@@ -158,8 +159,8 @@ public class TurnManager : PunBehaviour
                 {
                     Hashtable evTable = content as Hashtable;
                     int turn = (int)evTable["turn"];
-                    object move = evTable["move"];
-                    this.TurnManagerListener.OnPlayerMove(sender, turn, move);
+                    Vector2[] move = evTable["move"] as Vector2[];
+                    this.TurnManagerListener.OnPlayerMove(sender, turn, new List<Vector2>(move));
 
                     break;
                 }
@@ -192,6 +193,26 @@ public class TurnManager : PunBehaviour
     }
 
     #endregion
+
+    private static byte[] SerializeVector2(object customobject)
+    {
+        Vector2 vo = (Vector2)customobject;
+
+        byte[] bytes = new byte[2 * 4];
+        int index = 0;
+        Protocol.Serialize(vo.x, bytes, ref index);
+        Protocol.Serialize(vo.y, bytes, ref index);
+        return bytes;
+    }
+
+    private static object DeserializeVector2(byte[] bytes)
+    {
+        Vector2 vo = new Vector2();
+        int index = 0;
+        Protocol.Deserialize(out vo.x, bytes, ref index);
+        Protocol.Deserialize(out vo.y, bytes, ref index);
+        return vo;
+    }
 }
 
 public interface ITurnManagerCallbacks
@@ -202,7 +223,7 @@ public interface ITurnManagerCallbacks
     /// <param name="player">Player reference</param>
     /// <param name="turn">Turn Index</param>
     /// <param name="move">Move Object data</param>
-    void OnPlayerMove(PhotonPlayer player, int turn, object move);
+    void OnPlayerMove(PhotonPlayer player, int turn, List<Vector2> move);
 
     void OnPlayerChooseCard(PhotonPlayer player, List<CardType> cards);
 }

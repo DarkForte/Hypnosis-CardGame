@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using UnityEngine;
+using System.Collections.Generic;
 
 public abstract class GameState
 {
@@ -23,6 +24,9 @@ public abstract class GameState
     }
     public virtual void OnCellClicked(Cell cell)
     { }
+
+    public virtual void OnReceiveNetMessage(PhotonPlayer player, List<Vector2> targets)
+    {}
 
     public virtual void OnStateEnter()
     {

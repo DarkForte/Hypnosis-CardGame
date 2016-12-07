@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using UnityEngine;
 
 class GameStateMoveOrAttack : GameStateUnitSelected
 {
@@ -47,6 +48,9 @@ class GameStateMoveOrAttack : GameStateUnitSelected
 
         if (_nowAction == CardType.MOVE)
         {
+            Vector2[] moves = { _unit.Cell.OffsetCoord, cell.OffsetCoord };
+            _gameController.TurnManager.SendMove(moves);
+
             var path = _unit.FindPath(_gameController.CellMap, cell);
             _unit.Move(cell, path);
             _gameController.EndTurn();
@@ -68,6 +72,9 @@ class GameStateMoveOrAttack : GameStateUnitSelected
         {
             if (_unitsInRange.Contains(unit))
             {
+                Vector2[] moves = { _unit.Cell.OffsetCoord, unit.Cell.OffsetCoord };
+                _gameController.TurnManager.SendMove(moves);
+
                 _unit.DealDamage(unit);
                 _gameController.EndTurn();
             }

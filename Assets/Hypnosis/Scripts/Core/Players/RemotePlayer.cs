@@ -9,7 +9,7 @@ class RemotePlayer : Player
 {
     public override void Play(GameController gameController)
     {
-        throw new NotImplementedException();
+        gameController.GameState = new GameStateRemoteTurn(gameController);
     }
 
     public override IEnumerator SelectCard(GameController gameController)

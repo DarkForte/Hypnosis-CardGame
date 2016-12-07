@@ -57,6 +57,9 @@ class GameStateWaitingInput : GameState
         if (!availableSummonCells.Contains(cell))
             return;
 
+        Vector2[] moves = { cell.OffsetCoord };
+        _gameController.TurnManager.SendMove(moves);
+
         _gameController.SummonPrefab(NowAction, cell);
         _gameController.EndTurn();
     }
