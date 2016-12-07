@@ -9,7 +9,7 @@ using Photon;
 /// GameController class keeps track of the game, stores cells, units and players objects. It starts the game and makes turn transitions. 
 /// It reacts to user interacting with units or cells, and raises events related to game progress. 
 /// </summary>
-public class GameController : PunBehaviour
+public class GameController : PunBehaviour, ITurnManagerCallbacks
 {
     public event EventHandler GameEnded;
     
@@ -33,12 +33,14 @@ public class GameController : PunBehaviour
 
     public Player CurrentPlayer
     {
-        get { return Players[CurrentPlayerNumber]; }
+        get { return Players.Find(player => player.PlayerNumber == CurrentPlayerNumber); }
     }
 
     [HideInInspector]
     public int CurrentPlayerNumber;
+    [HideInInspector]
     public int FirstPlayerNumber;
+    int PlayerNumberSum;
 
     public Transform PlayersParent;
     public Transform CellParent;
@@ -56,8 +58,10 @@ public class GameController : PunBehaviour
 
     public List<GameObject> SpecialUnitPrefabs;
     public List<GameObject> CardPrefabs;
-    public GameObject LocalPlayer;
-    public GameObject RemotePlayer;
+    public Player LocalPlayer;
+    public Player RemotePlayer;
+
+    public TurnManager TurnManager;
 
     void Start()
     {
@@ -101,35 +105,8 @@ public class GameController : PunBehaviour
         else
             Debug.LogError("No IUnitGenerator script attached to cell grid");
 
+        TurnManager.TurnManagerListener = this;
         GameState = new GameStateGameOver(this);
-    }
-
-    private void OnCellDehighlighted(object sender, EventArgs e)
-    {
-        GameState.OnCellDeselected(sender as Cell);
-    }
-    private void OnCellHighlighted(object sender, EventArgs e)
-    {
-        GameState.OnCellSelected(sender as Cell);
-    } 
-    private void OnCellClicked(object sender, EventArgs e)
-    {
-        GameState.OnCellClicked(sender as Cell);
-    }
-
-    private void OnUnitClicked(object sender, EventArgs e)
-    {
-        GameState.OnUnitClicked(sender as Unit);
-    }
-    private void OnUnitDestroyed(object sender, AttackEventArgs e)
-    {
-        Units.Remove(sender as Unit);
-        var totalPlayersAlive = Units.Select(u => u.PlayerNumber).Distinct().ToList(); //Checking if the game is over
-        if (totalPlayersAlive.Count == 1)
-        {
-            if(GameEnded != null)
-                GameEnded.Invoke(this, new EventArgs());
-        }
     }
     
     /// <summary>
@@ -138,7 +115,11 @@ public class GameController : PunBehaviour
     public void StartGame()
     {
         NumberOfPlayers = Players.Count;
-        FirstPlayerNumber = PhotonNetwork.room.masterClientId;
+        PlayerNumberSum = 0;
+        foreach (var player in PhotonNetwork.playerList)
+            PlayerNumberSum += player.ID;
+
+        FirstPlayerNumber = PlayerNumberSum - PhotonNetwork.room.masterClientId;
 
         Players.ForEach(p => p.InitCardPool());
         GameState = new GameStateRoundStart(this);
@@ -187,7 +168,7 @@ public class GameController : PunBehaviour
 
         CurrentPlayerNumber = (CurrentPlayerNumber + 1) % NumberOfPlayers;
 
-        if(Players[CurrentPlayerNumber].NowCards.Count()==0)
+        if(CurrentPlayer.NowCards.Count()==0)
         {
             GameState = new GameStateRoundStart(this);
             StartCoroutine(StartRound());
@@ -195,7 +176,7 @@ public class GameController : PunBehaviour
         else
         {
             GetFirstCard(CurrentPlayerNumber).Activate();
-            Players[CurrentPlayerNumber].Play(this);
+            CurrentPlayer.Play(this);
         }
     }
 
@@ -229,22 +210,24 @@ public class GameController : PunBehaviour
 
         yield return new WaitUntil(() => localCardReady && remoteCardReady);
 
-        FirstPlayerNumber = 3 - FirstPlayerNumber;
+        FirstPlayerNumber = PlayerNumberSum - FirstPlayerNumber;
         CurrentPlayerNumber = FirstPlayerNumber;
         Debug.Log("Round Start! First player = " + FirstPlayerNumber);
 
         GetFirstCard(CurrentPlayerNumber).Activate();
-        Players[CurrentPlayerNumber].Play(this);
+        CurrentPlayer.Play(this);
     }
 
     public void CardReadyButtonPressed()
     {
-        HumanPlayer humanPlayer = Players[0] as HumanPlayer;
+        HumanPlayer humanPlayer = LocalPlayer as HumanPlayer;
         humanPlayer.CardReady(CardInterface.transform.GetChild(0).Find("Bottom Panel"), CardPanelBottom.GetChild(0));
         CardInterface.SetActive(false);
         PassButton.SetActive(true);
-        localCardReady = true;
 
+        TurnManager.SendCard(humanPlayer.NowCards.ToList());
+
+        localCardReady = true;
     }
 
     public void PickCardButtonPressed()
@@ -256,7 +239,7 @@ public class GameController : PunBehaviour
     protected DraggingCard GetFirstCard(int playerNum)
     {
         Transform cardPanel;
-        if (playerNum == 0)
+        if (playerNum == LocalPlayer.PlayerNumber)
             cardPanel = CardPanelBottom.GetChild(0);
         else
             cardPanel = CardPanelTop.GetChild(0);
@@ -290,5 +273,56 @@ public class GameController : PunBehaviour
             RemotePlayer.GetComponent<Player>().PlayerNumber = PhotonNetwork.otherPlayers[0].ID;
             StartGame();
         }
+    }
+
+    private void OnCellDehighlighted(object sender, EventArgs e)
+    {
+        GameState.OnCellDeselected(sender as Cell);
+    }
+    private void OnCellHighlighted(object sender, EventArgs e)
+    {
+        GameState.OnCellSelected(sender as Cell);
+    }
+    private void OnCellClicked(object sender, EventArgs e)
+    {
+        GameState.OnCellClicked(sender as Cell);
+    }
+
+    private void OnUnitClicked(object sender, EventArgs e)
+    {
+        GameState.OnUnitClicked(sender as Unit);
+    }
+    private void OnUnitDestroyed(object sender, AttackEventArgs e)
+    {
+        Units.Remove(sender as Unit);
+        var totalPlayersAlive = Units.Select(u => u.PlayerNumber).Distinct().ToList(); //Checking if the game is over
+        if (totalPlayersAlive.Count == 1)
+        {
+            if (GameEnded != null)
+                GameEnded.Invoke(this, new EventArgs());
+        }
+    }
+
+    void ITurnManagerCallbacks.OnPlayerMove(PhotonPlayer player, int turn, object move)
+    {
+        throw new NotImplementedException();
+    }
+
+    void ITurnManagerCallbacks.OnPlayerChooseCard(PhotonPlayer player, List<CardType> cards)
+    {
+        RemotePlayer remotePlayer = Players.Find(p => p is RemotePlayer) as RemotePlayer;
+        cards.ForEach(card => remotePlayer.NowCards.Enqueue(card));
+
+        Transform topPanel = CardPanelTop.GetChild(0);
+        int i = 0;
+        foreach (CardType card in cards)
+        {
+            GameObject cardObject = Instantiate(CardPrefabs[(int)card]);
+            DragAndDropCell cell = topPanel.GetChild(i).GetComponent<DragAndDropCell>();
+            cell.PlaceItem(cardObject);
+            i++;
+        }
+
+        remoteCardReady = true;
     }
 }

@@ -42,6 +42,11 @@ class HumanPlayer : Player
         yield return null;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="bottomPanel">The panel in Card Inteface</param>
+    /// <param name="displayPanel">The panel under board</param>
     public void CardReady(Transform bottomPanel, Transform displayPanel)
     {
         int i = 0;
