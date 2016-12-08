@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+using UnityEngine;
 
 class Shiluo : GenericUnit
 {
@@ -10,6 +10,15 @@ class Shiluo : GenericUnit
     {
         Moves = CommonMovement.dir4;
         AttackMoves = CommonMovement.dir8;
+    }
+
+    public override void PerformSpecialMove(GameController gameController, List<Vector2> targetSeq)
+    {
+        Cell cell = gameController.CellMap[targetSeq[0]];
+
+        Move(cell, null);
+        SpecialUsed = true;
+        gameController.EndTurn();
     }
 
     public override void SpecialMove(GameController gameController)

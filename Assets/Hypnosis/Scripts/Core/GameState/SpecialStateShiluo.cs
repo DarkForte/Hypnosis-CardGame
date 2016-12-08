@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+using UnityEngine;
 
 class SpecialStateShiluo : SpecialState
 {
@@ -22,9 +22,8 @@ class SpecialStateShiluo : SpecialState
         base.OnCellClicked(cell);
         if(_pathsInRange.Contains(cell))
         {
-            _unit.Move(cell, null);
-            _unit.SpecialUsed = true;
-            _gameController.EndTurn();
+            _gameController.TurnManager.SendMove(new Vector2[] { _unit.Cell.OffsetCoord, cell.OffsetCoord });
+            _unit.PerformSpecialMove(_gameController, new Vector2[] { cell.OffsetCoord }.ToList());
         }
     }
 

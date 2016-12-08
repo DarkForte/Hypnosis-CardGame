@@ -11,6 +11,11 @@ class Base : GenericUnit
         Steps = 0; // base cannot move
     }
 
+    public override void PerformSpecialMove(GameController gameController, List<Vector2> targetSeq)
+    {
+        
+    }
+
     public override void SpecialMove(GameController gameController)
     {
         

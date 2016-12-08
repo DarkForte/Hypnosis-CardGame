@@ -25,10 +25,9 @@ class Pawn : GenericUnit
         AttackMoves = CommonMovement.dir4;
     }
 
-    public override void SpecialMove(GameController gameController)
-    {
-        
-    }
+    public override void PerformSpecialMove(GameController gameController, List<Vector2> targetSeq){}
+
+    public override void SpecialMove(GameController gameController){}
 
     protected override void OnKillingOthers(Unit victim)
     {

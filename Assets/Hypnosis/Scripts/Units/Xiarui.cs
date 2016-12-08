@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+using UnityEngine;
 
 class Xiarui : GenericUnit
 {
@@ -10,6 +10,16 @@ class Xiarui : GenericUnit
     {
         Moves = CommonMovement.dir4;
         AttackMoves = CommonMovement.dir4;
+    }
+
+    public override void PerformSpecialMove(GameController gameController, List<Vector2> targetSeq)
+    {
+        var cellMap = gameController.CellMap;
+        Unit victim = cellMap[targetSeq[0]].OccupyingUnit;
+
+        victim.AddBuff(new Invincible(1));
+        SpecialUsed = true;
+        gameController.EndTurn();
     }
 
     public override void SpecialMove(GameController gameController)

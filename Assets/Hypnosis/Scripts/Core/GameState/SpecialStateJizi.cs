@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+using UnityEngine;
 
 class SpecialStateJizi : SpecialState
 {
@@ -22,9 +22,8 @@ class SpecialStateJizi : SpecialState
         base.OnUnitClicked(unit);
         if(unit.PlayerNumber != _unit.PlayerNumber)
         {
-            unit.AddBuff(new FirstTargetLocked(1));
-            _unit.SpecialUsed = true;
-            _gameController.EndTurn();
+            _gameController.TurnManager.SendMove(new Vector2[] { _unit.Cell.OffsetCoord, unit.Cell.OffsetCoord });
+            _unit.PerformSpecialMove(_gameController, new Vector2[] {unit.Cell.OffsetCoord}.ToList());
         }
     }
 }

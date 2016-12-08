@@ -21,7 +21,8 @@ class GameStateRemoteTurn : GameState
 
         if (targets.Count==0)
         {
-            //Remote passed, do nothing
+            _gameController.EndTurn();
+
         }
         else if(nowCard == CardType.MOVE)
         {
@@ -31,6 +32,8 @@ class GameStateRemoteTurn : GameState
             List<Cell> path = BFSPathFinder.FindCellPath(cellMap, unit.Moves, from, to, true, false, unit.PlayerNumber);
 
             unit.Move(cellMap[to], path);
+            _gameController.EndTurn();
+
         }
         else if(nowCard == CardType.ATTACK)
         {
@@ -38,17 +41,23 @@ class GameStateRemoteTurn : GameState
             Unit victim = cellMap[targets[1]].OccupyingUnit;
 
             attacker.DealDamage(victim);
+            _gameController.EndTurn();
+
         }
         else if(nowCard == CardType.SPECIAL)
         {
+            Unit performer = cellMap[targets[0]].OccupyingUnit;
+            targets.RemoveAt(0);
 
+            performer.PerformSpecialMove(_gameController, targets);
         }
-        else
+        else //Summon
         {
             Vector2 place = targets[0];
             _gameController.SummonPrefab(nowCard, _gameController.CellMap[place]);
+            _gameController.EndTurn();
+
         }
-        _gameController.EndTurn();
     }
 
 

@@ -48,6 +48,7 @@ public abstract class Unit : MonoBehaviour
     [HideInInspector]
     public bool SpecialUsed;
     public abstract void SpecialMove(GameController gameController);
+    public abstract void PerformSpecialMove(GameController gameController, List<Vector2> targetSeq);
 
 
     /// <summary>
@@ -264,7 +265,7 @@ public abstract class Unit : MonoBehaviour
     /// </summary>
     public virtual List<Cell> GetAvailableDestinations(Dictionary<Vector2, Cell> cellMap)
     {
-        return BFSDestinationFinder.FindCellsWithinSteps(cellMap, Cell, Moves, Steps, PlayerNumber, true, true, false);
+        return BFSDestinationFinder.FindCellsWithinSteps(cellMap, Cell, Moves, Steps, PlayerNumber, true, false, false);
     }
 
     public List<Cell> FindPath(Dictionary<Vector2, Cell> cellMap, Cell destination)

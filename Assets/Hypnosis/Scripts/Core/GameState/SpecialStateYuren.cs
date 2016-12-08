@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using UnityEngine;
 
 class SpecialStateYuren : SpecialState
 {
@@ -24,11 +25,8 @@ class SpecialStateYuren : SpecialState
 
         if (_unitsInRange.Contains(unit))
         {
-            _unit.AttackPower = 10;
-            _unit.DealDamage(unit);
-            _unit.AttackPower = 2;
-            _unit.SpecialUsed = true;
-            _gameController.EndTurn();
+            _gameController.TurnManager.SendMove(new Vector2[] { _unit.Cell.OffsetCoord, unit.Cell.OffsetCoord });
+            _unit.PerformSpecialMove(_gameController, new Vector2[] { unit.Cell.OffsetCoord }.ToList());
         }
     }
 }
