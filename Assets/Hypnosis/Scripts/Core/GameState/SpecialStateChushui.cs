@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+using UnityEngine;
 
 class SpecialStateChushui : SpecialState
 {
@@ -38,11 +38,12 @@ class SpecialStateChushui : SpecialState
         else
         {
             if(_unitsInRange.Contains(unit))
-            {
-                controlledUnit.DealDamage(unit);
-
-                _unit.SpecialUsed = true;
-                _gameController.EndTurn();
+            { 
+                Vector2[] targetSeq = new Vector2[] { _unit.Cell.OffsetCoord, controlledUnit.Cell.OffsetCoord, unit.Cell.OffsetCoord };
+                _gameController.TurnManager.SendMove(targetSeq);
+                List<Vector2> targetList = targetSeq.ToList();
+                targetList.RemoveAt(0);
+                _unit.PerformSpecialMove(_gameController, targetList);
             }
             else
             {

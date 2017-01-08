@@ -48,6 +48,12 @@ public abstract class Unit : MonoBehaviour
     [HideInInspector]
     public bool SpecialUsed;
     public abstract void SpecialMove(GameController gameController);
+
+    /// <summary>
+    /// Actually perform the special attack.
+    /// </summary>
+    /// <param name="gameController"></param>
+    /// <param name="targetSeq">The sequence of the target (excluding the unit himself)</param>
     public abstract void PerformSpecialMove(GameController gameController, List<Vector2> targetSeq);
 
 
