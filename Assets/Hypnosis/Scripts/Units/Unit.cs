@@ -74,7 +74,6 @@ public abstract class Unit : MonoBehaviour
 
     public string UnitName;
 
-
     private static IPathfinding _pathfinder = new BFSPathFinder();
 
     /// <summary>
@@ -90,6 +89,10 @@ public abstract class Unit : MonoBehaviour
 
         InitializeMoveAndAttack();
     }
+
+    public abstract void InitializeHealthBar(bool isLocalPlayer);
+    protected abstract void RefreshHealthBar();
+
     public abstract void InitializeMoveAndAttack();
 
     protected virtual void OnMouseDown()
@@ -216,6 +219,8 @@ public abstract class Unit : MonoBehaviour
 
             attacker.OnKillingOthers(this);
         }
+
+        RefreshHealthBar();
     }
 
     public virtual void Move(Cell destinationCell, List<Cell> path)
@@ -329,6 +334,7 @@ public abstract class Unit : MonoBehaviour
         Buffs.Remove(buff);
         buff.Undo(this);
     }
+
 
     /// <summary>
     /// Gives visual indication that the unit is under attack.

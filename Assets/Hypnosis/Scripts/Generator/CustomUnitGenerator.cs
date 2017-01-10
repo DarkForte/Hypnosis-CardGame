@@ -26,6 +26,7 @@ public class CustomUnitGenerator : MonoBehaviour, IUnitGenerator
                     unit.Cell = cell;
                     unit.transform.position = cell.transform.position;
                     unit.Initialize();
+                    unit.InitializeHealthBar(unit.PlayerNumber == 0);
                     ret.Add(unit);
                 }//Unit gets snapped to the nearest cell
                 else

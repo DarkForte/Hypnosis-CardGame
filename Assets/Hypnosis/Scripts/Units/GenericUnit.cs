@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public abstract class GenericUnit : Unit
 {
@@ -9,11 +10,15 @@ public abstract class GenericUnit : Unit
     private Coroutine RepeatGlowCoroutine;
     private Vector3 originalScale;
 
+    [HideInInspector]
+    public HealthBar healthBar;
+
     public override void Initialize()
     {
         base.Initialize();
         transform.position += new Vector3(0, 0, -0.1f);
         originalScale = transform.localScale;
+        healthBar = transform.FindChild("HealthBar").GetComponent<HealthBar>();
     }
 
     public override void OnUnitDeselected()
@@ -159,6 +164,18 @@ public abstract class GenericUnit : Unit
                 yield return 0;
             }
         }
+    }
+
+    public override void InitializeHealthBar(bool isLocalPlayer)
+    {
+        healthBar.SetHealth(MaxHP);
+        Color color = isLocalPlayer ? Color.red : Color.cyan;
+        healthBar.SetColor(color);
+    }
+
+    protected override void RefreshHealthBar()
+    {
+        healthBar.SetHealth(HP);
     }
 }
 

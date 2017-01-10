@@ -148,6 +148,7 @@ public class GameController : PunBehaviour, ITurnManagerCallbacks
         newUnit.UnitClicked += OnUnitClicked;
         newUnit.UnitDestroyed += OnUnitDestroyed;
         newUnit.Initialize();
+        newUnit.InitializeHealthBar(CurrentPlayerNumber == LocalPlayer.PlayerNumber);
         Units.Add(newUnit);
     }
 
