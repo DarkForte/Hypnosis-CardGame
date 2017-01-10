@@ -45,11 +45,7 @@ public class GameController : PunBehaviour, ITurnManagerCallbacks
     public Transform PlayersParent;
     public Transform CellParent;
     public Transform UnitsParent;
-    public GameObject CardInterface;
-    public GameObject PassButton;
-    public GameObject PickCardButton;
-    public Transform CardPanelBottom;
-    public Transform CardPanelTop;
+
 
     public List<Player> Players { get; private set; }
     public List<Cell> Cells { get; private set; }
@@ -57,11 +53,12 @@ public class GameController : PunBehaviour, ITurnManagerCallbacks
     public List<Unit> Units { get; private set; }
 
     public List<GameObject> SpecialUnitPrefabs;
-    public List<GameObject> CardPrefabs;
+
     public Player LocalPlayer;
     public Player RemotePlayer;
 
     public TurnManager TurnManager;
+    public UIController uiController;
 
     void Start()
     {
@@ -131,6 +128,7 @@ public class GameController : PunBehaviour, ITurnManagerCallbacks
 
         Players.ForEach(p => p.InitCardPool());
         GameState = new GameStateRoundStart(this);
+        uiController.SetLocalPlayer(LocalPlayer);
         StartCoroutine(StartRound());
     }
 
@@ -158,23 +156,7 @@ public class GameController : PunBehaviour, ITurnManagerCallbacks
     public void EndTurn()
     {
         GameState = new GameStateTurnChanging(this);
-
-        Transform cardPanel;
-        if (CurrentPlayerNumber == LocalPlayer.PlayerNumber)
-            cardPanel = CardPanelBottom.GetChild(0);
-        else
-            cardPanel = CardPanelTop.GetChild(0);
-
-        foreach(Transform cell in cardPanel)
-        {
-            if(cell.childCount>0)
-            {
-                //cell.GetChild(0).GetComponent<DraggingCard>().DeActivate();
-                cell.GetComponent<DragAndDropCell>().RemoveItem();
-                break;
-            }
-        }
-
+        uiController.EndTurn(CurrentPlayerNumber);
         CurrentPlayerNumber = PlayerNumberSum - CurrentPlayerNumber;
 
         if(CurrentPlayer.NowCards.Count()==0)
@@ -184,13 +166,14 @@ public class GameController : PunBehaviour, ITurnManagerCallbacks
         }
         else
         {
-            GetFirstCard(CurrentPlayerNumber).Activate();
+            uiController.GetFirstCard(CurrentPlayerNumber).Activate();
             CurrentPlayer.Play(this);
         }
     }
 
     [HideInInspector]
     public bool localCardReady, remoteCardReady;
+
     IEnumerator StartRound()
     {
         localCardReady = false;
@@ -214,7 +197,7 @@ public class GameController : PunBehaviour, ITurnManagerCallbacks
 
         foreach (var player in Players)
         {
-            StartCoroutine(player.SelectCard(this));
+            StartCoroutine(player.SelectCard(this, uiController));
         }
 
         yield return new WaitUntil(() => localCardReady && remoteCardReady);
@@ -223,26 +206,8 @@ public class GameController : PunBehaviour, ITurnManagerCallbacks
         CurrentPlayerNumber = FirstPlayerNumber;
         Debug.Log("Round Start! First player = " + FirstPlayerNumber);
 
-        GetFirstCard(CurrentPlayerNumber).Activate();
+        uiController.GetFirstCard(CurrentPlayerNumber).Activate();
         CurrentPlayer.Play(this);
-    }
-
-    public void CardReadyButtonPressed()
-    {
-        HumanPlayer humanPlayer = LocalPlayer as HumanPlayer;
-        humanPlayer.CardReady(CardInterface.transform.GetChild(0).Find("Bottom Panel"), CardPanelBottom.GetChild(0));
-        CardInterface.SetActive(false);
-        PassButton.SetActive(true);
-
-        TurnManager.SendCard(humanPlayer.NowCards.ToList());
-
-        localCardReady = true;
-    }
-
-    public void PickCardButtonPressed()
-    {
-        CardInterface.SetActive(true);
-        PickCardButton.SetActive(false);
     }
 
     public void PassButtonPressed()
@@ -254,24 +219,14 @@ public class GameController : PunBehaviour, ITurnManagerCallbacks
         }
     }
 
-    protected DraggingCard GetFirstCard(int playerNum)
+    public void CardReadyButtonPressed()
     {
-        Transform cardPanel;
-        if (playerNum == LocalPlayer.PlayerNumber)
-            cardPanel = CardPanelBottom.GetChild(0);
-        else
-            cardPanel = CardPanelTop.GetChild(0);
-
-        foreach(Transform cell in cardPanel)
-        {
-            if(cell.childCount>0)
-            {
-                DraggingCard card = cell.GetChild(0).GetComponent<DraggingCard>();
-                return card;
-            }
-        }
-        return null;
+        HumanPlayer humanPlayer = LocalPlayer as HumanPlayer;
+        humanPlayer.EquipCard(uiController.CardInterfaceBottomPanel(), uiController.LocalEquipCardPanel());
+        TurnManager.SendCard(humanPlayer.NowCards.ToList());
+        localCardReady = true;
     }
+
 
     public override void OnJoinedRoom()
     {
@@ -333,15 +288,7 @@ public class GameController : PunBehaviour, ITurnManagerCallbacks
         RemotePlayer remotePlayer = Players.Find(p => p is RemotePlayer) as RemotePlayer;
         cards.ForEach(card => remotePlayer.NowCards.Enqueue(card));
 
-        Transform topPanel = CardPanelTop.GetChild(0);
-        int i = 0;
-        foreach (CardType card in cards)
-        {
-            GameObject cardObject = Instantiate(CardPrefabs[(int)card]);
-            DragAndDropCell cell = topPanel.GetChild(i).GetComponent<DragAndDropCell>();
-            cell.PlaceItem(cardObject);
-            i++;
-        }
+        uiController.ShowRemoteCard(cards);
 
         remoteCardReady = true;
     }

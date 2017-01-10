@@ -9,9 +9,9 @@ class HumanPlayer : Player
         gamecontroller.GameState = new GameStateWaitingInput(gamecontroller, NowCards.Dequeue());
     }
 
-    public override IEnumerator SelectCard(GameController gameController)
+    public override IEnumerator SelectCard(GameController gameController, UIController uiController)
     {
-        GameObject cardInterface = gameController.CardInterface;
+        GameObject cardInterface = uiController.CardInterface;
         Transform topPanel = cardInterface.transform.GetChild(0).Find("Top Panel");
         Transform bottomPanel = cardInterface.transform.GetChild(0).Find("Bottom Panel");
         foreach(Transform cell in topPanel)
@@ -30,14 +30,14 @@ class HumanPlayer : Player
             CardType nowCardType = CardPool[p_CardPool];
             p_CardPool++;
 
-            GameObject cardPrefab = gameController.CardPrefabs.Find(card => card.GetComponent<DraggingCard>().type == nowCardType);
+            GameObject cardPrefab = uiController.CardPrefabs.Find(card => card.GetComponent<DraggingCard>().type == nowCardType);
             GameObject cardObject = Instantiate(cardPrefab);
             DragAndDropCell dragCell = cell.gameObject.GetComponent<DragAndDropCell>();
             dragCell.PlaceItem(cardObject);
         }
 
-        gameController.PassButton.SetActive(false);
-        gameController.PickCardButton.SetActive(true);
+        uiController.PassButton.SetActive(false);
+        uiController.PickCardButton.SetActive(true);
 
         yield return null;
     }
@@ -45,21 +45,20 @@ class HumanPlayer : Player
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="bottomPanel">The panel in Card Inteface</param>
-    /// <param name="displayPanel">The panel under board</param>
-    public void CardReady(Transform bottomPanel, Transform displayPanel)
+    /// <param name="selectPanel">The panel in Card Inteface</param>
+    /// <param name="equipPanel">The panel under board</param>
+    public void EquipCard(Transform selectPanel, Transform equipPanel)
     {
         int i = 0;
-        foreach(Transform cell in bottomPanel)
+        foreach(Transform cell in selectPanel)
         {
             GameObject card = cell.GetChild(0).gameObject;
             NowCards.Enqueue(card.GetComponent<DraggingCard>().type);
 
-            DragAndDropCell displayCell = displayPanel.GetChild(i).gameObject.GetComponent<DragAndDropCell>();
+            DragAndDropCell displayCell = equipPanel.GetChild(i).gameObject.GetComponent<DragAndDropCell>();
             displayCell.PlaceItem(card);
             i++;
         }
-
-
     }
+
 }

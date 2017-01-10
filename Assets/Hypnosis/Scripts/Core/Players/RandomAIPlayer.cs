@@ -7,7 +7,7 @@ using UnityEngine;
 
 class RandomAIPlayer : HumanPlayer
 {
-    public override IEnumerator SelectCard(GameController gameController)
+    public override IEnumerator SelectCard(GameController gameController, UIController uiController)
     {
         List<CardType> tmpCardList = new List<CardType>();
         for(int i=1; i<=5; i++)
@@ -21,12 +21,12 @@ class RandomAIPlayer : HumanPlayer
             }
         }
 
-        Transform cardPanel = gameController.CardPanelTop.GetChild(0);
+        Transform cardPanel = uiController.CardPanelTop.GetChild(0);
 
         for(int i=0; i<tmpCardList.Count; i++)
         {
             CardType nowCard = tmpCardList[i];
-            GameObject cardPrefab = gameController.CardPrefabs[(int)nowCard];
+            GameObject cardPrefab = uiController.CardPrefabs[(int)nowCard];
             GameObject cardObject = Instantiate(cardPrefab);
             cardPanel.GetChild(i).GetComponent<DragAndDropCell>().PlaceItem(cardObject);
 

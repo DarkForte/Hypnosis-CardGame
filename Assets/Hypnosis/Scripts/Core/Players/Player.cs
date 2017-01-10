@@ -15,7 +15,7 @@ public abstract class Player : MonoBehaviour
     /// </summary>         
     public abstract void Play(GameController gameController);
 
-    public abstract IEnumerator SelectCard(GameController gameController);
+    public abstract IEnumerator SelectCard(GameController gameController, UIController uiController = null);
 
     protected void ShuffleCardPool()
     {

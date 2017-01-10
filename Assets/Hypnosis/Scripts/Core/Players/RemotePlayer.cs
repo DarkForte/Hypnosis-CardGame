@@ -12,7 +12,7 @@ class RemotePlayer : Player
         gameController.GameState = new GameStateRemoteTurn(gameController);
     }
 
-    public override IEnumerator SelectCard(GameController gameController)
+    public override IEnumerator SelectCard(GameController gameController, UIController uiController)
     {
         yield return null;
     }
