@@ -49,13 +49,15 @@ public abstract class Unit : MonoBehaviour
     public bool SpecialUsed;
     public abstract void SpecialMove(GameController gameController);
 
+    [HideInInspector]
+    public PresetLogger logger;
+
     /// <summary>
     /// Actually perform the special attack.
     /// </summary>
     /// <param name="gameController"></param>
     /// <param name="targetSeq">The sequence of the target (excluding the unit himself)</param>
     public abstract void PerformSpecialMove(GameController gameController, List<Vector2> targetSeq);
-
 
     /// <summary>
     /// Determines speed of movement animation.
@@ -221,6 +223,8 @@ public abstract class Unit : MonoBehaviour
         }
 
         RefreshHealthBar();
+
+        logger.LogAttack(attacker, this);
     }
 
     public virtual void Move(Cell destinationCell, List<Cell> path)
@@ -239,6 +243,8 @@ public abstract class Unit : MonoBehaviour
 
         if (UnitMoved != null)
             UnitMoved.Invoke(this, new MovementEventArgs(Cell, destinationCell, path));
+
+        logger.LogMove(this);
     }
     protected virtual IEnumerator MovementAnimation(List<Cell> reversePath)
     {

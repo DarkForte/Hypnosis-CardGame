@@ -46,7 +46,6 @@ public class GameController : PunBehaviour, ITurnManagerCallbacks
     public Transform CellParent;
     public Transform UnitsParent;
 
-
     public List<Player> Players { get; private set; }
     public List<Cell> Cells { get; private set; }
     public Dictionary<Vector2, Cell> CellMap { get; private set; }
@@ -97,6 +96,7 @@ public class GameController : PunBehaviour, ITurnManagerCallbacks
             {
                 unit.UnitClicked += OnUnitClicked;
                 unit.UnitDestroyed += OnUnitDestroyed;
+                unit.logger = uiController.LogWindow;
             }
         }
         else
@@ -147,7 +147,10 @@ public class GameController : PunBehaviour, ITurnManagerCallbacks
         newUnit.UnitDestroyed += OnUnitDestroyed;
         newUnit.Initialize();
         newUnit.InitializeHealthBar(CurrentPlayerNumber == LocalPlayer.PlayerNumber);
+        newUnit.logger = uiController.LogWindow;
         Units.Add(newUnit);
+
+        uiController.LogWindow.LogSummon(CurrentPlayer, newUnit);
     }
 
     /// <summary>
@@ -215,6 +218,7 @@ public class GameController : PunBehaviour, ITurnManagerCallbacks
         if(CurrentPlayer == LocalPlayer)
         {
             TurnManager.SendMove(new Vector2[0]);
+            uiController.LogWindow.LogPass(CurrentPlayer);
             EndTurn();
         }
     }

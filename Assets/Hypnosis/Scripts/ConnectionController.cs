@@ -11,6 +11,7 @@ class ConnectionController : PunBehaviour
     public string previousRoom;
 
     const string NickNamePlayerPrefsKey = "NickName";
+    public PresetLogger logger;
 
     public void Connect()
     {
@@ -60,7 +61,9 @@ class ConnectionController : PunBehaviour
 
     public override void OnJoinedRoom()
     {
-        Debug.Log("Joined room: " + PhotonNetwork.room.name);
+        string logText = "Joined room: " + PhotonNetwork.room.name;
+        Debug.Log(logText);
+        logger.Log(logText);
         this.previousRoom = PhotonNetwork.room.name;
 
     }
