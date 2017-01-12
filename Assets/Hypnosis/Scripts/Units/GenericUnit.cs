@@ -169,7 +169,7 @@ public abstract class GenericUnit : Unit
     public override void InitializeHealthBar(bool isLocalPlayer)
     {
         healthBar.SetHealth(MaxHP);
-        Color color = isLocalPlayer ? Color.red : Color.cyan;
+        Color color = isLocalPlayer ? Color.cyan : Color.red;
         healthBar.SetColor(color);
     }
 

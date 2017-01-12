@@ -59,6 +59,9 @@ public class GameController : PunBehaviour, ITurnManagerCallbacks
     public TurnManager TurnManager;
     public UIController uiController;
 
+    public PresetLogger logger;
+
+
     void Start()
     {
         Players = new List<Player>();
@@ -96,7 +99,7 @@ public class GameController : PunBehaviour, ITurnManagerCallbacks
             {
                 unit.UnitClicked += OnUnitClicked;
                 unit.UnitDestroyed += OnUnitDestroyed;
-                unit.logger = uiController.LogWindow;
+                unit.logger = logger;
             }
         }
         else
@@ -147,10 +150,10 @@ public class GameController : PunBehaviour, ITurnManagerCallbacks
         newUnit.UnitDestroyed += OnUnitDestroyed;
         newUnit.Initialize();
         newUnit.InitializeHealthBar(CurrentPlayerNumber == LocalPlayer.PlayerNumber);
-        newUnit.logger = uiController.LogWindow;
+        newUnit.logger = logger;
         Units.Add(newUnit);
 
-        uiController.LogWindow.LogSummon(CurrentPlayer, newUnit);
+        logger.LogSummon(CurrentPlayer, newUnit);
     }
 
     /// <summary>
@@ -218,7 +221,7 @@ public class GameController : PunBehaviour, ITurnManagerCallbacks
         if(CurrentPlayer == LocalPlayer)
         {
             TurnManager.SendMove(new Vector2[0]);
-            uiController.LogWindow.LogPass(CurrentPlayer);
+            logger.LogPass(CurrentPlayer);
             EndTurn();
         }
     }

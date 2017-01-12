@@ -10,6 +10,7 @@ public class PresetLogger : LogWindow
     const string attackText = "{0} attacked {1}!";
     const string summonText = "{0} summoned {1}!";
     const string passText = "{0} passed!";
+    const string specialText = "{0}'s special move!";
 
     public void LogMove(Unit unit)
     {
@@ -29,5 +30,11 @@ public class PresetLogger : LogWindow
     public void LogPass(Player player)
     {
         Log(String.Format(passText, "Player " + player.PlayerNumber));
+    }
+
+    public void LogSpecial(Unit unit, string specialMsg)
+    {
+        Log(String.Format(specialText, unit.UnitName));
+        Log(specialMsg);
     }
 }

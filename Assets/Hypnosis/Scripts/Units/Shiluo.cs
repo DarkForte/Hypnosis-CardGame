@@ -16,8 +16,10 @@ class Shiluo : GenericUnit
     {
         Cell cell = gameController.CellMap[targetSeq[0]];
 
-        Move(cell, null);
+        Move(cell, null, log:false);
         SpecialUsed = true;
+
+        gameController.logger.LogSpecial(this, this.UnitName + " transported to " + cell.OffsetCoord + "!");
         gameController.EndTurn();
     }
 

@@ -19,6 +19,8 @@ class Xiarui : GenericUnit
 
         victim.AddBuff(new Invincible(1));
         SpecialUsed = true;
+
+        gameController.logger.LogSpecial(this, victim.UnitName + " became invincible for the round!");
         gameController.EndTurn();
     }
 

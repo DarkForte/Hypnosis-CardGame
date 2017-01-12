@@ -15,6 +15,8 @@ class ConnectionController : PunBehaviour
 
     public void Connect()
     {
+        logger.Log("Connecting...");
+
         if (PhotonNetwork.AuthValues == null)
         {
             PhotonNetwork.AuthValues = new AuthenticationValues();
@@ -75,7 +77,9 @@ class ConnectionController : PunBehaviour
 
     public override void OnConnectionFail(DisconnectCause cause)
     {
-        Debug.Log("Disconnected due to: " + cause + ". this.previousRoom: " + this.previousRoom);
+        string logMsg = "Disconnected due to: " + cause + ". this.previousRoom: " + this.previousRoom;
+        Debug.Log(logMsg);
+        logger.Log(logMsg);
     }
 }
 

@@ -24,9 +24,11 @@ class Yuren : GenericUnit
         Unit victim = cellMap[targetSeq[0]].OccupyingUnit;
 
         AttackPower = 10;
-        DealDamage(victim);
+        DealDamage(victim, log:false);
         AttackPower = 2;
         SpecialUsed = true;
+
+        gameController.logger.LogSpecial(this, this.UnitName + " strongly attacked " + victim.UnitName + "!");
         gameController.EndTurn();
     }
 

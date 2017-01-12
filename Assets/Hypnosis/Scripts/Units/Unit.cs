@@ -172,7 +172,7 @@ public abstract class Unit : MonoBehaviour
     protected List<Unit> GetTargetsInRange(Dictionary<Vector2, Cell> cellMap, bool excludeFriend)
     {
         List<Unit> ret = new List<Unit>();
-        List<Cell> destinationCells = BFSDestinationFinder.FindCellsWithinSteps(cellMap, Cell, Moves, AttackRange, PlayerNumber, true, true, true);
+        List<Cell> destinationCells = BFSDestinationFinder.FindCellsWithinSteps(cellMap, Cell, Moves, AttackRange, PlayerNumber, pierceFriend:true, pierceEnemy:true, includeTakenCell:true);
         foreach (Cell cell in destinationCells)
         {
             if (cell.IsTaken)
@@ -187,19 +187,19 @@ public abstract class Unit : MonoBehaviour
     /// <summary>
     /// Method deals damage to unit given as parameter.
     /// </summary>
-    public virtual void DealDamage(Unit target)
+    public virtual void DealDamage(Unit target, bool log = true)
     {
         if (isMoving)
             return;
 
         MarkAsAttacking(target);
-        target.Defend(this, AttackPower);
+        target.Defend(this, AttackPower, log);
 
     }
     /// <summary>
     /// Attacking unit calls Defend method on defending unit. 
     /// </summary>
-    protected virtual void Defend(Unit attacker, int damage)
+    protected virtual void Defend(Unit attacker, int damage, bool log)
     {
         MarkAsDefending(attacker);
         if(Buffs.Find(buff => buff is Invincible) != null)
@@ -224,10 +224,11 @@ public abstract class Unit : MonoBehaviour
 
         RefreshHealthBar();
 
-        logger.LogAttack(attacker, this);
+        if(log)
+            logger.LogAttack(attacker, this);
     }
 
-    public virtual void Move(Cell destinationCell, List<Cell> path)
+    public virtual void Move(Cell destinationCell, List<Cell> path, bool log=true)
     {
         if (isMoving)
             return;
@@ -244,7 +245,8 @@ public abstract class Unit : MonoBehaviour
         if (UnitMoved != null)
             UnitMoved.Invoke(this, new MovementEventArgs(Cell, destinationCell, path));
 
-        logger.LogMove(this);
+        if(log)
+            logger.LogMove(this);
     }
     protected virtual IEnumerator MovementAnimation(List<Cell> reversePath)
     {

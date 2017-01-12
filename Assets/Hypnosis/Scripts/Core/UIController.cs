@@ -12,7 +12,6 @@ public class UIController : MonoBehaviour
     public GameObject PickCardButton;
     public Transform CardPanelBottom;
     public Transform CardPanelTop;
-    public PresetLogger LogWindow;
 
     [HideInInspector]
     public Player localPlayer;

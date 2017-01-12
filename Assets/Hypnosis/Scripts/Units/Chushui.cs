@@ -6,6 +6,8 @@ using UnityEngine;
 
 class Chushui : GenericUnit
 {
+    const string specialMsg = "{0} controlled {1} to attack {2}!";
+
     public override void InitializeMoveAndAttack()
     {
         Moves = CommonMovement.dir8;
@@ -24,9 +26,10 @@ class Chushui : GenericUnit
         Vector2 targetPos = targetSeq[1];
         Unit targetUnit = gameController.CellMap[targetPos].OccupyingUnit;
 
-        controlledUnit.DealDamage(targetUnit);
+        controlledUnit.DealDamage(targetUnit, log:false);
 
         SpecialUsed = true;
+        gameController.logger.LogSpecial(this, String.Format(specialMsg, this.UnitName, controlledUnit.UnitName, targetUnit.UnitName));
         gameController.EndTurn();
     }
 }

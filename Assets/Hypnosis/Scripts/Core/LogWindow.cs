@@ -6,6 +6,8 @@ public class LogWindow : MonoBehaviour
 {
     public Text logText;
     Queue<string> textQueue = new Queue<string>();
+    public ScrollRect scrollRect;
+    public Scrollbar scrollbar;
 
     void RefreshText()
     {
@@ -17,6 +19,8 @@ public class LogWindow : MonoBehaviour
         }
 
         logText.text = buffer;
+        scrollRect.verticalNormalizedPosition = 0.0f;
+        scrollbar.value = 0.0f;
     }
 
     public void Log(string text)

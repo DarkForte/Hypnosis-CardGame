@@ -21,7 +21,7 @@ class GameStateRemoteTurn : GameState
 
         if (targets.Count==0)
         {
-            _gameController.uiController.LogWindow.LogPass(remotePlayer);
+            _gameController.logger.LogPass(remotePlayer);
             _gameController.EndTurn();
 
         }

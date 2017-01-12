@@ -6,6 +6,8 @@ using UnityEngine;
 
 class Jizi : GenericUnit
 {
+    const string specialMsg = "{0} can only choose {1} as the first target in this round!";
+
     public override void InitializeMoveAndAttack()
     {
         Moves = CommonMovement.dir8;
@@ -19,6 +21,8 @@ class Jizi : GenericUnit
 
         unit.AddBuff(new FirstTargetLocked(1));
         SpecialUsed = true;
+
+        gameController.logger.LogSpecial(this, String.Format(specialMsg, "Player " + unit.PlayerNumber, unit.UnitName));
         gameController.EndTurn();
     }
 
