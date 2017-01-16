@@ -11,7 +11,7 @@ public class CustomUnitGenerator : MonoBehaviour, IUnitGenerator
     /// <summary>
     /// Returns units that are already children of UnitsParent object.
     /// </summary>
-    public List<Unit> SpawnUnits(List<Cell> cells)
+    public List<Unit> SpawnUnits(Dictionary<Vector2, Cell> cells)
     {
         List<Unit> ret = new List<Unit>();
         for (int i = 0; i < UnitsParent.childCount; i++)
@@ -19,7 +19,7 @@ public class CustomUnitGenerator : MonoBehaviour, IUnitGenerator
             var unit = UnitsParent.GetChild(i).GetComponent<Unit>();
             if(unit !=null)
             {
-                var cell = cells.OrderBy(h => Math.Abs((h.transform.position - unit.transform.position).magnitude)).First();
+                var cell = cells.OrderBy(h => Math.Abs((h.Value.transform.position - unit.transform.position).magnitude)).First().Value;
                 if (!cell.IsTaken)
                 {
                     cell.OccupyingUnit = unit;

@@ -200,7 +200,10 @@ public abstract class Unit : MonoBehaviour
     /// Attacking unit calls Defend method on defending unit. 
     /// </summary>
     protected virtual void Defend(Unit attacker, int damage, bool log)
-    {
+    { 
+        if (log)
+            logger.LogAttack(attacker, this);
+
         MarkAsDefending(attacker);
         if(Buffs.Find(buff => buff is Invincible) != null)
         {
@@ -224,8 +227,6 @@ public abstract class Unit : MonoBehaviour
 
         RefreshHealthBar();
 
-        if(log)
-            logger.LogAttack(attacker, this);
     }
 
     public virtual void Move(Cell destinationCell, List<Cell> path, bool log=true)

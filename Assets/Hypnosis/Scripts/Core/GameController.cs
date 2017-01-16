@@ -41,6 +41,7 @@ public class GameController : PunBehaviour, ITurnManagerCallbacks
     [HideInInspector]
     public int FirstPlayerNumber;
     int PlayerNumberSum;
+    int RoundNumber;
 
     public Transform PlayersParent;
     public Transform CellParent;
@@ -90,20 +91,6 @@ public class GameController : PunBehaviour, ITurnManagerCallbacks
             cell.CellHighlighted += OnCellHighlighted;
             cell.CellDehighlighted += OnCellDehighlighted;
         }
-             
-        var unitGenerator = GetComponent<IUnitGenerator>();
-        if (unitGenerator != null)
-        {
-            Units = unitGenerator.SpawnUnits(Cells);
-            foreach (var unit in Units)
-            {
-                unit.UnitClicked += OnUnitClicked;
-                unit.UnitDestroyed += OnUnitDestroyed;
-                unit.logger = logger;
-            }
-        }
-        else
-            Debug.LogError("No IUnitGenerator script attached to cell grid");
 
         TurnManager.TurnManagerListener = this;
         GameState = new GameStateGameOver(this);
@@ -121,7 +108,21 @@ public class GameController : PunBehaviour, ITurnManagerCallbacks
 
         FirstPlayerNumber = PlayerNumberSum - PhotonNetwork.room.masterClientId;
 
-        foreach(Unit unit in Units)
+        var unitGenerator = GetComponent<IUnitGenerator>();
+        if (unitGenerator != null)
+        {
+            Units = unitGenerator.SpawnUnits(CellMap);
+            foreach (var unit in Units)
+            {
+                unit.UnitClicked += OnUnitClicked;
+                unit.UnitDestroyed += OnUnitDestroyed;
+                unit.logger = logger;
+            }
+        }
+        else
+            Debug.LogError("No IUnitGenerator script attached to cell grid");
+
+        foreach (Unit unit in Units)
         {
             if (unit.PlayerNumber == 0)
                 unit.PlayerNumber = LocalPlayer.PlayerNumber;
@@ -130,6 +131,7 @@ public class GameController : PunBehaviour, ITurnManagerCallbacks
         }
 
         Players.ForEach(p => p.InitCardPool());
+        RoundNumber = 0;
         GameState = new GameStateRoundStart(this);
         uiController.SetLocalPlayer(LocalPlayer);
         StartCoroutine(StartRound());
@@ -167,8 +169,18 @@ public class GameController : PunBehaviour, ITurnManagerCallbacks
 
         if(CurrentPlayer.NowCards.Count()==0)
         {
-            GameState = new GameStateRoundStart(this);
-            StartCoroutine(StartRound());
+            if(RoundNumber == 9)
+            {
+                JudgeResult();
+                GameState = new GameStateGameOver(this);
+                PhotonNetwork.Disconnect();
+            }
+            else
+            { 
+                GameState = new GameStateRoundStart(this);
+                StartCoroutine(StartRound());
+            }
+
         }
         else
         {
@@ -182,6 +194,8 @@ public class GameController : PunBehaviour, ITurnManagerCallbacks
 
     IEnumerator StartRound()
     {
+        RoundNumber++;
+
         localCardReady = false;
         remoteCardReady = false;
 
@@ -234,6 +248,19 @@ public class GameController : PunBehaviour, ITurnManagerCallbacks
         localCardReady = true;
     }
 
+    private void JudgeResult()
+    {
+        List<Unit> bases = Units.FindAll(unit => unit is Base);
+        if (bases[0].HP == bases[1].HP)
+        {
+            logger.LogTie();
+        }
+        else
+        {
+            int winner = bases[0].HP > bases[1].HP ? bases[0].PlayerNumber : bases[1].PlayerNumber;
+            logger.LogWinner(Players.Find(p => p.PlayerNumber == winner));
+        }
+    }
 
     public override void OnJoinedRoom()
     {
@@ -272,15 +299,23 @@ public class GameController : PunBehaviour, ITurnManagerCallbacks
     {
         GameState.OnUnitClicked(sender as Unit);
     }
+
     private void OnUnitDestroyed(object sender, AttackEventArgs e)
     {
-        Units.Remove(sender as Unit);
-        var totalPlayersAlive = Units.Select(u => u.PlayerNumber).Distinct().ToList(); //Checking if the game is over
-        if (totalPlayersAlive.Count == 1)
+        Unit destroyedUnit = sender as Unit;
+        Units.Remove(destroyedUnit);
+
+        if(destroyedUnit is Base)
         {
-            if (GameEnded != null)
-                GameEnded.Invoke(this, new EventArgs());
+            Player loser = Players.Find(p => p.PlayerNumber == destroyedUnit.PlayerNumber);
+            Player winner = Players.Find(p => p.PlayerNumber != destroyedUnit.PlayerNumber);
+            logger.LogBaseDestroyed(loser);
+            logger.LogWinner(winner);
+
+            GameState = new GameStateGameOver(this);
+            PhotonNetwork.Disconnect();
         }
+        
     }
 
     void ITurnManagerCallbacks.OnPlayerMove(PhotonPlayer player, int turn, List<Vector2> move)

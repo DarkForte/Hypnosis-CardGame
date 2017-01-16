@@ -1,10 +1,11 @@
 public class GameStateGameOver : GameState
 {
-    public GameStateGameOver(GameController cellGrid) : base(cellGrid)
+    public GameStateGameOver(GameController gameController) : base(gameController)
     {
     }
 
     public override void OnStateEnter()
     {
+        _gameController.uiController.HideInGameUI();
     }
 }

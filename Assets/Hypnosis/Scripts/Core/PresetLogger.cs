@@ -11,6 +11,8 @@ public class PresetLogger : LogWindow
     const string summonText = "{0} summoned {1}!";
     const string passText = "{0} passed!";
     const string specialText = "{0}'s special move!";
+    const string baseDestroyedText = "{0}'s base is destroyed!";
+    const string winText = "{0} wins the game!";
 
     public void LogMove(Unit unit)
     {
@@ -36,5 +38,20 @@ public class PresetLogger : LogWindow
     {
         Log(String.Format(specialText, unit.UnitName));
         Log(specialMsg);
+    }
+
+    public void LogBaseDestroyed(Player player)
+    {
+        Log(String.Format(baseDestroyedText, "Player " + player.PlayerNumber));
+    }
+
+    public void LogWinner(Player winner)
+    {
+        Log(String.Format(winText, "Player " + winner.PlayerNumber));
+    }
+
+    public void LogTie()
+    {
+        Log("The game is a tie!");
     }
 }

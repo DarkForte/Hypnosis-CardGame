@@ -19,7 +19,7 @@ public class UIController : MonoBehaviour
     public List<GameObject> CardPrefabs;
 
     public void SetLocalPlayer(Player localPlayer)
-    {
+    { 
         this.localPlayer = localPlayer;
     }
 
@@ -94,6 +94,12 @@ public class UIController : MonoBehaviour
             cell.PlaceItem(cardObject);
             i++;
         }
+    }
+
+    public void HideInGameUI()
+    {
+        PassButton.SetActive(false);
+        PickCardButton.SetActive(false);
     }
 }
 

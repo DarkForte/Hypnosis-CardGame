@@ -12,11 +12,11 @@ class RandomUnitGenerator : MonoBehaviour, IUnitGenerator
     public int NumberOfPlayers;
     public int UnitsPerPlayer;
 
-    public List<Unit> SpawnUnits(List<Cell> cells)
+    public List<Unit> SpawnUnits(Dictionary<Vector2, Cell> cells)
     {
         List<Unit> ret = new List<Unit>();
 
-        List<Cell> freeCells = cells.FindAll(h => h.GetComponent<Cell>().IsTaken == false);
+        List<Cell> freeCells = cells.Values.ToList().FindAll(h => h.GetComponent<Cell>().IsTaken == false);
         freeCells = freeCells.OrderBy(h => _rnd.Next()).ToList();
 
         for (int i = 0; i < NumberOfPlayers; i++)
