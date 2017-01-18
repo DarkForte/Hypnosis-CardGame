@@ -101,6 +101,8 @@ public class GameController : PunBehaviour, ITurnManagerCallbacks
     /// </summary>
     public void StartGame()
     {
+        uiController.HideConnectUI();
+
         NumberOfPlayers = Players.Count;
         PlayerNumberSum = 0;
         foreach (var player in PhotonNetwork.playerList)
@@ -131,6 +133,7 @@ public class GameController : PunBehaviour, ITurnManagerCallbacks
         }
 
         Players.ForEach(p => p.InitCardPool());
+        Players.ForEach(p => p.NowCards.Clear());
         RoundNumber = 0;
         GameState = new GameStateRoundStart(this);
         uiController.SetLocalPlayer(LocalPlayer);
@@ -163,8 +166,11 @@ public class GameController : PunBehaviour, ITurnManagerCallbacks
     /// </summary>
     public void EndTurn()
     {
-        GameState = new GameStateTurnChanging(this);
         uiController.EndTurn(CurrentPlayerNumber);
+        if (GameState is GameStateGameOver)
+            return;
+
+        GameState = new GameStateTurnChanging(this);
         CurrentPlayerNumber = PlayerNumberSum - CurrentPlayerNumber;
 
         if(CurrentPlayer.NowCards.Count()==0)
@@ -172,8 +178,7 @@ public class GameController : PunBehaviour, ITurnManagerCallbacks
             if(RoundNumber == 9)
             {
                 JudgeResult();
-                GameState = new GameStateGameOver(this);
-                PhotonNetwork.Disconnect();
+                EndGame();
             }
             else
             { 
@@ -225,6 +230,7 @@ public class GameController : PunBehaviour, ITurnManagerCallbacks
         FirstPlayerNumber = PlayerNumberSum - FirstPlayerNumber;
         CurrentPlayerNumber = FirstPlayerNumber;
         Debug.Log("Round Start! First player = " + FirstPlayerNumber);
+        logger.Log(String.Format("Round {0} start!", RoundNumber));
 
         uiController.GetFirstCard(CurrentPlayerNumber).Activate();
         CurrentPlayer.Play(this);
@@ -260,6 +266,11 @@ public class GameController : PunBehaviour, ITurnManagerCallbacks
             int winner = bases[0].HP > bases[1].HP ? bases[0].PlayerNumber : bases[1].PlayerNumber;
             logger.LogWinner(Players.Find(p => p.PlayerNumber == winner));
         }
+    }
+
+    private void EndGame()
+    {
+        GameState = new GameStateGameOver(this);
     }
 
     public override void OnJoinedRoom()
@@ -312,8 +323,7 @@ public class GameController : PunBehaviour, ITurnManagerCallbacks
             logger.LogBaseDestroyed(loser);
             logger.LogWinner(winner);
 
-            GameState = new GameStateGameOver(this);
-            PhotonNetwork.Disconnect();
+            EndGame();
         }
         
     }

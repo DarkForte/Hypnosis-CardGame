@@ -130,7 +130,7 @@ public class TurnManager : PunBehaviour
         moveHt.Add("move", move);
 
         byte evCode = EvMove;
-        PhotonNetwork.RaiseEvent(evCode, moveHt, true, new RaiseEventOptions() { CachingOption = EventCaching.AddToRoomCache });
+        PhotonNetwork.RaiseEvent(evCode, moveHt, true, new RaiseEventOptions() { CachingOption = EventCaching.DoNotCache });
 
         // the server won't send the event back to the origin (by default). to get the event, call it locally 
         // (note: the order of events might be mixed up as we do this locally)
@@ -139,7 +139,7 @@ public class TurnManager : PunBehaviour
 
     public void SendCard(List<CardType> cards)
     {
-        PhotonNetwork.RaiseEvent(EvCard, cards.ToArray(), true, new RaiseEventOptions() { CachingOption = EventCaching.AddToRoomCache });
+        PhotonNetwork.RaiseEvent(EvCard, cards.ToArray(), true, new RaiseEventOptions() { CachingOption = EventCaching.DoNotCache});
     }
 
     #region Callbacks

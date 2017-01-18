@@ -10,6 +10,7 @@ public class UIController : MonoBehaviour
     public GameObject CardInterface;
     public GameObject PassButton;
     public GameObject PickCardButton;
+    public GameObject ConnectButton;
     public Transform CardPanelBottom;
     public Transform CardPanelTop;
 
@@ -100,6 +101,16 @@ public class UIController : MonoBehaviour
     {
         PassButton.SetActive(false);
         PickCardButton.SetActive(false);
+    }
+
+    public void ShowConnectUI()
+    {
+        ConnectButton.SetActive(true);
+    }
+
+    public void HideConnectUI()
+    {
+        ConnectButton.SetActive(false);
     }
 }
 

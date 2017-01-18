@@ -12,6 +12,11 @@ public class StandardUnitGenerator : MonoBehaviour, IUnitGenerator
 
     public List<Unit> SpawnUnits(Dictionary<Vector2, Cell> cells)
     {
+        foreach(Transform child in unitParent)
+        {
+            Destroy(child.gameObject);
+        }
+
         List<Unit> ret = new List<Unit>();
 
         SpawnIndividualUnit(basePrefab, 0, new Vector2(2, 0), cells, ret);

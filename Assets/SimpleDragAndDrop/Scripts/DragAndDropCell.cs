@@ -14,7 +14,8 @@ public class DragAndDropCell : MonoBehaviour, IDropHandler
         Swap,                                                               // Items will be swapped between cells
         DropOnly,                                                           // Item will be dropped into cell
         DragOnly,                                                           // Item will be dragged from this cell
-        UnlimitedSource                                                     // Item will be cloned and dragged from this cell
+        UnlimitedSource,                                                    // Item will be cloned and dragged from this cell
+        ViewOnly
     }
     public CellType cellType = CellType.Swap;                               // Special type of this cell
 
@@ -60,7 +61,7 @@ public class DragAndDropCell : MonoBehaviour, IDropHandler
                 // Check cell's type
                 switch (cellType)
                 {
-                    case CellType.DropOnly:
+                    case CellType.DropOnly | CellType.ViewOnly:
                         DragAndDropItem.icon.SetActive(false);              // Item will not be dropped
                         break;
                     case CellType.UnlimitedSource:

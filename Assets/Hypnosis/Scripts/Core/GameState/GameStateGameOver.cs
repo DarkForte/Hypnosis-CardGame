@@ -7,5 +7,6 @@ public class GameStateGameOver : GameState
     public override void OnStateEnter()
     {
         _gameController.uiController.HideInGameUI();
+        _gameController.uiController.ShowConnectUI();
     }
 }

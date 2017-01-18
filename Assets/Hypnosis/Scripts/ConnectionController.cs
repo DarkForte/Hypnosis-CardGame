@@ -12,47 +12,48 @@ class ConnectionController : PunBehaviour
 
     const string NickNamePlayerPrefsKey = "NickName";
     public PresetLogger logger;
+    
 
     public void Connect()
     {
-        logger.Log("Connecting...");
-
-        if (PhotonNetwork.AuthValues == null)
+        if(!PhotonNetwork.connected)
         {
-            PhotonNetwork.AuthValues = new AuthenticationValues();
-        }
+            logger.Log("Connecting...");
 
-        PhotonNetwork.playerName = "UserName";
-        PhotonNetwork.ConnectUsingSettings("1");
+            if (PhotonNetwork.AuthValues == null)
+            {
+                PhotonNetwork.AuthValues = new AuthenticationValues();
+            }
 
-        // this way we can force timeouts by pausing the client (in editor)
-        PhotonHandler.StopFallbackSendAckThread();
-    }
+            PhotonNetwork.playerName = "UserName";
+            PhotonNetwork.ConnectUsingSettings("1");
 
-
-    public override void OnConnectedToMaster()
-    {
-        // after connect 
-        this.UserId = PhotonNetwork.player.userId;
-        ////Debug.Log("UserID " + this.UserId);
-
-
-        // after timeout: re-join "old" room (if one is known)
-        if (!string.IsNullOrEmpty(this.previousRoom))
-        {
-            Debug.Log("ReJoining previous room: " + this.previousRoom);
-            PhotonNetwork.ReJoinRoom(this.previousRoom);
-            this.previousRoom = null;       // we only will try to re-join once. if this fails, we will get into a random/new room
+            // this way we can force timeouts by pausing the client (in editor)
+            PhotonHandler.StopFallbackSendAckThread();
         }
         else
         {
-            // else: join a random room
-            PhotonNetwork.JoinRandomRoom();
+            logger.Log("Rejoin room...");
+            if (PhotonNetwork.inRoom)
+                PhotonNetwork.LeaveRoom();
+            else
+                PhotonNetwork.JoinRandomRoom();
         }
+
+    }
+
+    public override void OnConnectedToMaster()
+    {
+        Debug.Log("in OnConnectedToMaster");
+        // after connect 
+        this.UserId = PhotonNetwork.player.userId;
+
+        PhotonNetwork.JoinRandomRoom();
     }
 
     public override void OnJoinedLobby()
     {
+        Debug.Log("in OnJoinedLobby");
         OnConnectedToMaster(); // this way, it does not matter if we join a lobby or not
     }
 
