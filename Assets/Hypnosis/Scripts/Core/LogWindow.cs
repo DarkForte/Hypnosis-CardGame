@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
+using System.Text;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using System;
 
 public class LogWindow : MonoBehaviour
 {
@@ -23,10 +25,12 @@ public class LogWindow : MonoBehaviour
         scrollbar.value = 0.0f;
     }
 
-    public void Log(string text)
+    public void Log(string text, string color = "white", bool refresh = true)
     {
+        text = String.Format("<color={0}>{1}</color>", color, text);
         textQueue.Enqueue(text);
-        RefreshText();
+        if(refresh)
+            RefreshText();
     }
 
 }

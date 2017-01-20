@@ -39,10 +39,10 @@ public class StandardUnitGenerator : MonoBehaviour, IUnitGenerator
         unit.Cell = cellMap[pos];
         unit.Cell.OccupyingUnit = unit;
         unit.PlayerNumber = player;
+        unit.isFriendUnit = (player == 0);
         unit.transform.position = unit.Cell.transform.position;
 
         unit.Initialize();
-        unit.InitializeHealthBar(player == 0);
 
         ret.Add(unit);
 

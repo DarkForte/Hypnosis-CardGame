@@ -5,7 +5,6 @@ using UnityEngine;
 public abstract class Player : MonoBehaviour
 {
     public int PlayerNumber;
-
     protected List<CardType> CardPool;
     protected int p_CardPool;
     public Queue<CardType> NowCards = new Queue<CardType>();

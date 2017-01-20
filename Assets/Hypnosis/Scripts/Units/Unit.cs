@@ -68,6 +68,7 @@ public abstract class Unit : MonoBehaviour
     /// Indicates the player that the unit belongs to. Should correspoond with PlayerNumber variable on Player script.
     /// </summary>
     public int PlayerNumber;
+    public bool isFriendUnit;
 
     /// <summary>
     /// Indicates if movement animation is playing.
@@ -172,7 +173,7 @@ public abstract class Unit : MonoBehaviour
     protected List<Unit> GetTargetsInRange(Dictionary<Vector2, Cell> cellMap, bool excludeFriend)
     {
         List<Unit> ret = new List<Unit>();
-        List<Cell> destinationCells = BFSDestinationFinder.FindCellsWithinSteps(cellMap, Cell, Moves, AttackRange, PlayerNumber, pierceFriend:true, pierceEnemy:true, includeTakenCell:true);
+        List<Cell> destinationCells = BFSDestinationFinder.FindCellsWithinSteps(cellMap, Cell, AttackMoves, AttackRange, PlayerNumber, pierceFriend:true, pierceEnemy:true, includeTakenCell:true);
         foreach (Cell cell in destinationCells)
         {
             if (cell.IsTaken)

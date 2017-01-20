@@ -14,44 +14,62 @@ public class PresetLogger : LogWindow
     const string baseDestroyedText = "{0}'s base is destroyed!";
     const string winText = "{0} wins the game!";
 
+    public const string SelfColor = "cyan";
+    public const string EnemyColor = "red";
+    public const string DefaultColor = "white";
+
     public void LogMove(Unit unit)
     {
-        Log(String.Format(moveText, unit.UnitName));
+        string color = GetColor(unit.isFriendUnit);
+        Log(String.Format(moveText, unit.UnitName), color);
     }
 
     public void LogAttack(Unit attacker, Unit victim)
     {
-        Log(String.Format(attackText, attacker.UnitName, victim.UnitName));
+        string color = GetColor(attacker.isFriendUnit);
+        Log(String.Format(attackText, attacker.UnitName, victim.UnitName), color);
     }
 
     public void LogSummon(Player player, Unit unit)
     {
-        Log(String.Format(summonText, "Player " + player.PlayerNumber, unit.UnitName));
+        string color = GetColor(player is HumanPlayer);
+        Log(String.Format(summonText, "Player " + player.PlayerNumber, unit.UnitName), color);
     }
 
     public void LogPass(Player player)
     {
-        Log(String.Format(passText, "Player " + player.PlayerNumber));
+        string color = GetColor(player is HumanPlayer);
+        Log(String.Format(passText, "Player " + player.PlayerNumber), color);
     }
 
     public void LogSpecial(Unit unit, string specialMsg)
     {
-        Log(String.Format(specialText, unit.UnitName));
-        Log(specialMsg);
+        string color = GetColor(unit.isFriendUnit);
+        Log(String.Format(specialText, unit.UnitName), color, refresh:false);
+        Log(specialMsg, color);
     }
 
     public void LogBaseDestroyed(Player player)
     {
-        Log(String.Format(baseDestroyedText, "Player " + player.PlayerNumber));
+        string color = GetColor(player is HumanPlayer);
+        Log(String.Format(baseDestroyedText, "Player " + player.PlayerNumber), color);
     }
 
     public void LogWinner(Player winner)
     {
-        Log(String.Format(winText, "Player " + winner.PlayerNumber));
+        Log(String.Format(winText, "Player " + winner.PlayerNumber), DefaultColor);
     }
 
     public void LogTie()
     {
-        Log("The game is a tie!");
+        Log("The game is a tie!", DefaultColor);
+    }
+
+    protected string GetColor(bool isLocal)
+    {
+        if (isLocal)
+            return SelfColor;
+        else
+            return EnemyColor;
     }
 }

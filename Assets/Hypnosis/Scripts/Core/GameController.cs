@@ -149,12 +149,12 @@ public class GameController : PunBehaviour, ITurnManagerCallbacks
 
         Unit newUnit = newObject.GetComponent<Unit>();
         newUnit.PlayerNumber = CurrentPlayerNumber;
+        newUnit.isFriendUnit = (CurrentPlayerNumber == LocalPlayer.PlayerNumber);
         newUnit.Cell = cell;
         cell.OccupyingUnit = newUnit;
         newUnit.UnitClicked += OnUnitClicked;
         newUnit.UnitDestroyed += OnUnitDestroyed;
         newUnit.Initialize();
-        newUnit.InitializeHealthBar(CurrentPlayerNumber == LocalPlayer.PlayerNumber);
         newUnit.logger = logger;
         Units.Add(newUnit);
 
@@ -230,7 +230,7 @@ public class GameController : PunBehaviour, ITurnManagerCallbacks
         FirstPlayerNumber = PlayerNumberSum - FirstPlayerNumber;
         CurrentPlayerNumber = FirstPlayerNumber;
         Debug.Log("Round Start! First player = " + FirstPlayerNumber);
-        logger.Log(String.Format("Round {0} start!", RoundNumber));
+        logger.Log(String.Format("Round {0} start!", RoundNumber), PresetLogger.DefaultColor);
 
         uiController.GetFirstCard(CurrentPlayerNumber).Activate();
         CurrentPlayer.Play(this);
