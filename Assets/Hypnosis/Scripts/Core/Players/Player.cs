@@ -43,7 +43,7 @@ public abstract class Player : MonoBehaviour
             CardPool.Add(CardType.JIZI);
             CardPool.Add(CardType.CHUSHUI);
             CardPool.Add(CardType.SHILUO);
-            CardPool.Add(CardType.YUREN);
+            CardPool.Add(CardType.YEZI);
         }
 
         for (i = 1; i <= 16; i++)

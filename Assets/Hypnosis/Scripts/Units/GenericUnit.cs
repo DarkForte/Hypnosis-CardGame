@@ -10,15 +10,19 @@ public abstract class GenericUnit : Unit
     private Coroutine RepeatGlowCoroutine;
     private Vector3 originalScale;
 
-    
+    [HideInInspector]
     public HealthBar healthBar;
+
+    public void Awake()
+    {
+        healthBar = transform.FindChild("HealthBar").GetComponent<HealthBar>();
+    }
 
     public override void Initialize()
     {
         base.Initialize();
         transform.position += new Vector3(0, 0, -0.1f);
         originalScale = transform.localScale;
-        healthBar = transform.FindChild("HealthBar").GetComponent<HealthBar>();
         InitializeHealthBar(isFriendUnit);
     }
 

@@ -36,7 +36,9 @@ public abstract class Unit : MonoBehaviour
     /// </summary>
     public Cell Cell { get; set; }
 
-    public int HP { get; protected set; }
+    [HideInInspector]
+    private int _HP;
+    public int HP { get { return _HP; } set { _HP = value; RefreshHealthBar(); } }
     public int DefenceFactor;
 
     public List<Vector2> Moves { get; protected set; }
