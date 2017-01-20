@@ -220,6 +220,12 @@ public class GameController : PunBehaviour, ITurnManagerCallbacks
             }
         }
 
+        FirstPlayerNumber = PlayerNumberSum - FirstPlayerNumber;
+        CurrentPlayerNumber = FirstPlayerNumber;
+
+        logger.Log("Next round: Round " + RoundNumber);
+        logger.Log(String.Format("Player {0} acts first.", CurrentPlayerNumber), logger.GetColor(CurrentPlayer is HumanPlayer));
+
         foreach (var player in Players)
         {
             StartCoroutine(player.SelectCard(this, uiController));
@@ -227,8 +233,7 @@ public class GameController : PunBehaviour, ITurnManagerCallbacks
 
         yield return new WaitUntil(() => localCardReady && remoteCardReady);
 
-        FirstPlayerNumber = PlayerNumberSum - FirstPlayerNumber;
-        CurrentPlayerNumber = FirstPlayerNumber;
+
         Debug.Log("Round Start! First player = " + FirstPlayerNumber);
         logger.Log(String.Format("Round {0} start!", RoundNumber), PresetLogger.DefaultColor);
 

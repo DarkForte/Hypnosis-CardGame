@@ -65,7 +65,7 @@ public class PresetLogger : LogWindow
         Log("The game is a tie!", DefaultColor);
     }
 
-    protected string GetColor(bool isLocal)
+    public string GetColor(bool isLocal)
     {
         if (isLocal)
             return SelfColor;

@@ -20,9 +20,10 @@ public abstract class Player : MonoBehaviour
     {
         int i;
         int cnt = CardPool.Count;
+        System.Random randomGenerator = new System.Random((int)Time.time + PlayerNumber);
         for(i=0; i<cnt; i++)
         {
-            int nowPos = Utils.randomGenerator.Next(i, cnt);
+            int nowPos = randomGenerator.Next(i, cnt);
             //swap CardPool[i], CardPool[nowPos]
             CardType tmp = CardPool[nowPos];
             CardPool[nowPos] = CardPool[i];
