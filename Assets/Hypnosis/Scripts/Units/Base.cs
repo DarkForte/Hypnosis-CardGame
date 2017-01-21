@@ -6,6 +6,11 @@ using UnityEngine;
 
 class Base : GenericUnit
 {
+    public override void Initialize()
+    {
+        base.Initialize();
+        SpecialUsed = true;
+    }
     public override void InitializeMoveAndAttack()
     {
         Steps = 0; // base cannot move

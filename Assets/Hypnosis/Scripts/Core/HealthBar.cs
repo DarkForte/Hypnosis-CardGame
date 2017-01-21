@@ -4,7 +4,12 @@ using UnityEngine.UI;
 
 public class HealthBar : MonoBehaviour
 {
-    public Text displayText;
+    Text displayText;
+
+    public void Awake()
+    {
+        displayText = GetComponent<Text>();
+    }
 
     public void SetHealth(int health)
     {

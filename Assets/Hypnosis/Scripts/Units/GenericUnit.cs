@@ -10,12 +10,24 @@ public abstract class GenericUnit : Unit
     private Coroutine RepeatGlowCoroutine;
     private Vector3 originalScale;
 
-    [HideInInspector]
-    public HealthBar healthBar;
+    protected HealthBar healthBar;
+    protected Transform specialMark;
+
+    public override bool SpecialUsed
+    {
+        get{ return base.SpecialUsed; }
+        set
+        {
+            base.SpecialUsed = value;
+            specialMark.gameObject.SetActive(!value);
+        }
+    }
 
     public void Awake()
     {
-        healthBar = transform.FindChild("HealthBar").GetComponent<HealthBar>();
+        Transform UIparent = transform.Find("Canvas");
+        healthBar = UIparent.Find("Health Bar").GetComponent<HealthBar>();
+        specialMark = UIparent.Find("Special Mark");
     }
 
     public override void Initialize()
@@ -182,5 +194,6 @@ public abstract class GenericUnit : Unit
     {
         healthBar.SetHealth(HP);
     }
+
 }
 

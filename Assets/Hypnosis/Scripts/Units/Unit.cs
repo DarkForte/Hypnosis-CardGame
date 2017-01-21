@@ -48,7 +48,13 @@ public abstract class Unit : MonoBehaviour
     public int AttackPower;
 
     [HideInInspector]
-    public bool SpecialUsed;
+    private bool specialUsed;
+    public virtual bool SpecialUsed
+    {
+        get {return specialUsed;}
+        set {specialUsed = value;}
+    }
+
     public abstract void SpecialMove(GameController gameController);
 
     [HideInInspector]
@@ -76,6 +82,8 @@ public abstract class Unit : MonoBehaviour
     /// Indicates if movement animation is playing.
     /// </summary>
     public bool isMoving { get; set; }
+
+
 
     public string UnitName;
 
