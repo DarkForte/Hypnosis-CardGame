@@ -17,7 +17,7 @@ class Pawn : GenericUnit
     {
         Moves.Add(new Vector2(1, 0));
         Moves.Add(new Vector2(-1, 0));
-        if (PlayerNumber == 0)
+        if (isFriendUnit)
             Moves.Add(new Vector2(0, 1));
         else
             Moves.Add(new Vector2(0, -1));

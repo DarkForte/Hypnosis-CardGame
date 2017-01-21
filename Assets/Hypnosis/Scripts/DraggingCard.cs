@@ -4,19 +4,35 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class DraggingCard : DragAndDropItem
 {
+    public Sprite secretSprite;
+    Sprite oringinalSprite;
+    Image image;
     public CardType type = 0;
     protected Coroutine pulseCoroutine;
+
+    public void Awake()
+    {
+        image = GetComponent<Image>();
+        oringinalSprite = image.sprite;
+    }
 
     public void Activate()
     {
         pulseCoroutine = StartCoroutine(Pulse(0.5f, 0.5f, 1.1f));
+        image.sprite = oringinalSprite;
     }
     public void DeActivate()
     {
         StopCoroutine(pulseCoroutine);
+    }
+
+    public void Hide()
+    {
+        image.sprite = secretSprite;
     }
 
     private IEnumerator Pulse(float breakTime, float delay, float scaleFactor)

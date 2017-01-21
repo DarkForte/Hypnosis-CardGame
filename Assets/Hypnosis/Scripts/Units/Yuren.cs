@@ -11,7 +11,7 @@ class Yuren : GenericUnit
         Moves = CommonMovement.dir4;
         foreach(var attack in CommonMovement.front3)
         {
-            if (PlayerNumber == 0)
+            if (isFriendUnit)
                 AttackMoves.Add(attack);
             else
                 AttackMoves.Add(-attack);

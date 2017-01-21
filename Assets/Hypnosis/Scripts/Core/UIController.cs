@@ -91,6 +91,7 @@ public class UIController : MonoBehaviour
         foreach (CardType card in cards)
         {
             GameObject cardObject = Instantiate(CardPrefabs[(int)card]);
+            cardObject.GetComponent<DraggingCard>().Hide();
             DragAndDropCell cell = topPanel.GetChild(i).GetComponent<DragAndDropCell>();
             cell.PlaceItem(cardObject);
             i++;
