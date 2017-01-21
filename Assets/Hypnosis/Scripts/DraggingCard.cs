@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 public class DraggingCard : DragAndDropItem
 {
-    public Sprite secretSprite;
+    Sprite secretSprite;
     Sprite oringinalSprite;
     Image image;
     public CardType type = 0;
@@ -16,6 +16,7 @@ public class DraggingCard : DragAndDropItem
 
     public void Awake()
     {
+        secretSprite = Resources.Load<Sprite>("card_back");
         image = GetComponent<Image>();
         oringinalSprite = image.sprite;
     }
