@@ -35,6 +35,8 @@ class GameStateWaitingInput : GameState
             return;
         if (FirstLockedTarget != null && unit != FirstLockedTarget)
             return;
+        if (unit.Buffs.Find(buff => buff is FirstTargetExcluded) != null)
+            return;
 
         if(unit.PlayerNumber.Equals(_gameController.CurrentPlayerNumber))
         {

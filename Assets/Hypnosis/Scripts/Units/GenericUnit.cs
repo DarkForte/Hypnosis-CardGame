@@ -93,6 +93,11 @@ public abstract class GenericUnit : Unit
         SetColor(Color.magenta);
     }
 
+    public override void MarkAsFirstTargetExcluded()
+    {
+        SetColor(Color.grey);
+    }
+
     private void SetColor(Color color)
     {
         var _renderer = GetComponent<SpriteRenderer>();

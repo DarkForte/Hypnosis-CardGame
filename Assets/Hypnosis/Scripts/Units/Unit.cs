@@ -170,6 +170,11 @@ public abstract class Unit : MonoBehaviour
             UnitDeselected.Invoke(this, new EventArgs());
     }
 
+    public virtual void OnMoveFinished(List<Cell> path)
+    {
+
+    }
+
     public virtual List<Unit> GetEnemiesInRange(Dictionary<Vector2, Cell> cellMap)
     {
         return GetTargetsInRange(cellMap, true);
@@ -240,7 +245,7 @@ public abstract class Unit : MonoBehaviour
 
     }
 
-    public virtual void Move(Cell destinationCell, List<Cell> path, bool log=true)
+    public virtual void Move(Cell destinationCell, List<Cell> reversePath, bool log=true)
     {
         if (isMoving)
             return;
@@ -249,18 +254,20 @@ public abstract class Unit : MonoBehaviour
         Cell = destinationCell;
         destinationCell.OccupyingUnit = this;
 
-        if (MovementSpeed > 0 && path != null)
-            StartCoroutine(MovementAnimation(path));
+        if (MovementSpeed > 0 && reversePath != null)
+            StartCoroutine(MovementAnimation(reversePath, MovementSpeed));
         else
             transform.position = Cell.transform.position;
 
         if (UnitMoved != null)
-            UnitMoved.Invoke(this, new MovementEventArgs(Cell, destinationCell, path));
+            UnitMoved.Invoke(this, new MovementEventArgs(Cell, destinationCell, reversePath));
+
+        OnMoveFinished(reversePath);
 
         if(log)
             logger.LogMove(this);
     }
-    protected virtual IEnumerator MovementAnimation(List<Cell> reversePath)
+    protected virtual IEnumerator MovementAnimation(List<Cell> reversePath, float speed)
     {
         isMoving = true;
 
@@ -269,7 +276,7 @@ public abstract class Unit : MonoBehaviour
         {
             while (new Vector2(transform.position.x, transform.position.y) != new Vector2(cell.transform.position.x, cell.transform.position.y))
             {
-                transform.position = Vector3.MoveTowards(transform.position, new Vector3(cell.transform.position.x, cell.transform.position.y, transform.position.z), Time.deltaTime * MovementSpeed * 8);
+                transform.position = Vector3.MoveTowards(transform.position, new Vector3(cell.transform.position.x, cell.transform.position.y, transform.position.z), Time.deltaTime * speed * 8);
                 yield return 0;
             }
         }
@@ -392,6 +399,8 @@ public abstract class Unit : MonoBehaviour
     public abstract void MarkAsInvincible();
 
     public abstract void MarkAsFirstTargetLocked();
+
+    public abstract void MarkAsFirstTargetExcluded();
 
     /// <summary>
     /// Method returns the unit to its base appearance
