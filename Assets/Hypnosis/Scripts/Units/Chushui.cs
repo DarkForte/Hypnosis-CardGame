@@ -26,7 +26,7 @@ class Chushui : GenericUnit
         Vector2 targetPos = targetSeq[1];
         Unit targetUnit = gameController.CellMap[targetPos].OccupyingUnit;
 
-        controlledUnit.DealDamage(targetUnit, log:false);
+        controlledUnit.DealDamage(targetUnit, gameController, log:false);
 
         SpecialUsed = true;
         gameController.logger.LogSpecial(this, String.Format(specialMsg, this.UnitName, controlledUnit.UnitName, targetUnit.UnitName));

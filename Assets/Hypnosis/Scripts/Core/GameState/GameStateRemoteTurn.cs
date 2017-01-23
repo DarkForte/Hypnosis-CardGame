@@ -32,7 +32,7 @@ class GameStateRemoteTurn : GameState
             Unit unit = cellMap[from].OccupyingUnit;
             List<Cell> path = BFSPathFinder.FindCellPath(cellMap, unit.Moves, from, to, true, false, unit.PlayerNumber);
 
-            unit.Move(cellMap[to], path);
+            unit.Move(cellMap[to], path, _gameController);
             _gameController.EndTurn();
 
         }
@@ -41,7 +41,7 @@ class GameStateRemoteTurn : GameState
             Unit attacker = cellMap[targets[0]].OccupyingUnit;
             Unit victim = cellMap[targets[1]].OccupyingUnit;
 
-            attacker.DealDamage(victim);
+            attacker.DealDamage(victim, _gameController);
             _gameController.EndTurn();
 
         }

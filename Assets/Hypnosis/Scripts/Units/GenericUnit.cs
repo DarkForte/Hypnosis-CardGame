@@ -98,6 +98,11 @@ public abstract class GenericUnit : Unit
         SetColor(Color.grey);
     }
 
+    public override void MarkAsAttackUp()
+    {
+        SetColor(Color.red);
+    }
+
     private void SetColor(Color color)
     {
         var _renderer = GetComponent<SpriteRenderer>();

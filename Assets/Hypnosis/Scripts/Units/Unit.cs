@@ -83,8 +83,6 @@ public abstract class Unit : MonoBehaviour
     /// </summary>
     public bool isMoving { get; set; }
 
-
-
     public string UnitName;
 
     private static IPathfinding _pathfinder = new BFSPathFinder();
@@ -99,6 +97,8 @@ public abstract class Unit : MonoBehaviour
 
         Moves = new List<Vector2>();
         AttackMoves = new List<Vector2>();
+
+        UnitMoved += OnUnitMoved;
 
         InitializeMoveAndAttack();
     }
@@ -133,20 +133,24 @@ public abstract class Unit : MonoBehaviour
     /// <summary>
     /// Method is called at the end of each turn.
     /// </summary>
-    public virtual void OnTurnEnd()
+    public virtual void OnTurnEnd(GameController gameController)
     {
     }
     /// <summary>
     /// Method is called when units HP drops below 1.
     /// </summary>
-    protected virtual void OnDestroyed()
+    protected virtual void OnDestroyed(GameController gameController)
     {
         Cell.OccupyingUnit = null;
         MarkAsDestroyed();
         Destroy(gameObject);
     }
 
-    protected virtual void OnKillingOthers(Unit victim)
+    public virtual void OnUnitCreate(Unit unit, GameController gameController)
+    {
+    } 
+
+    protected virtual void OnKillingOthers(Unit victim, GameController gameController)
     {
     }
 
@@ -165,14 +169,21 @@ public abstract class Unit : MonoBehaviour
     public virtual void OnUnitDeselected()
     {
         MarkAsFriendly();
-        Buffs.ForEach(buff => buff.Apply(this));
+        //Buffs.ForEach(buff => buff.Apply(this));
         if (UnitDeselected != null)
             UnitDeselected.Invoke(this, new EventArgs());
     }
 
-    public virtual void OnMoveFinished(List<Cell> path)
+    public virtual void OnMoveStart(GameController gameController)
     {
+    }
 
+    public virtual void OnMoveFinished(List<Cell> path, GameController gameController)
+    {
+    }
+
+    public virtual void OnUnitMoved(object sender, MovementEventArgs args)
+    {
     }
 
     public virtual List<Unit> GetEnemiesInRange(Dictionary<Vector2, Cell> cellMap)
@@ -203,19 +214,19 @@ public abstract class Unit : MonoBehaviour
     /// <summary>
     /// Method deals damage to unit given as parameter.
     /// </summary>
-    public virtual void DealDamage(Unit target, bool log = true)
+    public virtual void DealDamage(Unit target, GameController gameController, bool log = true)
     {
         if (isMoving)
             return;
 
         MarkAsAttacking(target);
-        target.Defend(this, AttackPower, log);
+        target.Defend(this, AttackPower, gameController, log);
 
     }
     /// <summary>
     /// Attacking unit calls Defend method on defending unit. 
     /// </summary>
-    protected virtual void Defend(Unit attacker, int damage, bool log)
+    protected virtual void Defend(Unit attacker, int damage, GameController gameController, bool log)
     { 
         if (log)
             logger.LogAttack(attacker, this);
@@ -236,19 +247,21 @@ public abstract class Unit : MonoBehaviour
             if (UnitDestroyed != null)
                 UnitDestroyed.Invoke(this, new AttackEventArgs(attacker, this, damage));
 
-            OnDestroyed();
+            OnDestroyed(gameController);
 
-            attacker.OnKillingOthers(this);
+            attacker.OnKillingOthers(this, gameController);
         }
 
         RefreshHealthBar();
 
     }
 
-    public virtual void Move(Cell destinationCell, List<Cell> reversePath, bool log=true)
+    public virtual void Move(Cell destinationCell, List<Cell> reversePath, GameController gameController, bool log=true)
     {
         if (isMoving)
             return;
+
+        OnMoveStart(gameController);
 
         Cell.OccupyingUnit = null;
         Cell = destinationCell;
@@ -262,7 +275,7 @@ public abstract class Unit : MonoBehaviour
         if (UnitMoved != null)
             UnitMoved.Invoke(this, new MovementEventArgs(Cell, destinationCell, reversePath));
 
-        OnMoveFinished(reversePath);
+        OnMoveFinished(reversePath, gameController);
 
         if(log)
             logger.LogMove(this);
@@ -401,6 +414,8 @@ public abstract class Unit : MonoBehaviour
     public abstract void MarkAsFirstTargetLocked();
 
     public abstract void MarkAsFirstTargetExcluded();
+
+    public abstract void MarkAsAttackUp();
 
     /// <summary>
     /// Method returns the unit to its base appearance

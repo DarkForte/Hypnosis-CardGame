@@ -29,17 +29,17 @@ class Pawn : GenericUnit
 
     public override void SpecialMove(GameController gameController){}
 
-    protected override void OnKillingOthers(Unit victim)
+    protected override void OnKillingOthers(Unit victim, GameController gameController)
     {
-        StartCoroutine(TakeUpCell(victim));
+        StartCoroutine(TakeUpCell(victim, gameController));
     }
 
-    private IEnumerator TakeUpCell(Unit victim)
+    private IEnumerator TakeUpCell(Unit victim, GameController gameController)
     {
         yield return new WaitWhile(() => isMoving);
         List<Cell> path = new List<Cell>();
         path.Add(victim.Cell);
         path.Add(Cell);
-        Move(victim.Cell, path);
+        Move(victim.Cell, path, gameController);
     }
 }

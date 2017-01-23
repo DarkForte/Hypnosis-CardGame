@@ -52,7 +52,7 @@ class GameStateMoveOrAttack : GameStateUnitSelected
             _gameController.TurnManager.SendMove(moves);
 
             var path = _unit.FindPath(_gameController.CellMap, cell);
-            _unit.Move(cell, path);
+            _unit.Move(cell, path, _gameController);
             _gameController.EndTurn();
         }
     }
@@ -75,7 +75,7 @@ class GameStateMoveOrAttack : GameStateUnitSelected
                 Vector2[] moves = { _unit.Cell.OffsetCoord, unit.Cell.OffsetCoord };
                 _gameController.TurnManager.SendMove(moves);
 
-                _unit.DealDamage(unit);
+                _unit.DealDamage(unit, _gameController);
                 _gameController.EndTurn();
             }
         }

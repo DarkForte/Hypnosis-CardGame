@@ -7,6 +7,7 @@ public abstract class Buff
     /// Determines how long the buff should last (expressed in turns). If set to negative number, buff will be permanent.
     /// </summary>
     public int Duration;
+    public const int ETERNAL = 999;
 
     public Buff(int duration)
     {

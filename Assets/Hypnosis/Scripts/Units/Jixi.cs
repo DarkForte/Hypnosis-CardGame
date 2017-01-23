@@ -38,7 +38,7 @@ class Jixi : GenericUnit
         return ret;
     }
 
-    public override void OnMoveFinished(List<Cell> path)
+    public override void OnMoveFinished(List<Cell> path, GameController gameController)
     {
         AddBuff(new FirstTargetExcluded(1));
     }
@@ -67,7 +67,7 @@ class Jixi : GenericUnit
 
         float oringialSpeed = unit.MovementSpeed;
         unit.MovementSpeed = 5;
-        unit.Move(cellMap[dest], path, log: false);
+        unit.Move(cellMap[dest], path, gameController, log: false);
         unit.MovementSpeed = oringialSpeed;
 
         SpecialUsed = true;

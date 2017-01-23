@@ -38,16 +38,16 @@ public abstract class Player : MonoBehaviour
         int i;
         for(i=1; i<=2; i++)
         {
-            CardPool.Add(CardType.JIZI);
-            CardPool.Add(CardType.CHUSHUI);
             CardPool.Add(CardType.SHILUO);
             CardPool.Add(CardType.YEZI);
             CardPool.Add(CardType.JIXI);
+            CardPool.Add(CardType.LIN);
         }
 
         CardPool.Add(CardType.YUREN);
         CardPool.Add(CardType.XIARUI);
-        
+        CardPool.Add(CardType.JIZI);
+        CardPool.Add(CardType.CHUSHUI);
 
         for (i = 1; i <= 10; i++)
             CardPool.Add(CardType.ATTACK);

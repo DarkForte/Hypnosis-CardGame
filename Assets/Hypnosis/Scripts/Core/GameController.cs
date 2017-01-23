@@ -12,6 +12,7 @@ using Photon;
 public class GameController : PunBehaviour, ITurnManagerCallbacks
 {
     public event EventHandler GameEnded;
+    public event EventHandler UnitCreated;
     
     private GameState _gameState;//The grid delegates some of its behaviours to gameState object.
     public GameState GameState
@@ -158,6 +159,8 @@ public class GameController : PunBehaviour, ITurnManagerCallbacks
         newUnit.logger = logger;
         Units.Add(newUnit);
 
+        Units.ForEach(unit => unit.OnUnitCreate(newUnit, this));
+
         logger.LogSummon(CurrentPlayer, newUnit);
     }
 
@@ -169,6 +172,8 @@ public class GameController : PunBehaviour, ITurnManagerCallbacks
         uiController.EndTurn(CurrentPlayerNumber);
         if (GameState is GameStateGameOver)
             return;
+
+        Units.ForEach(unit => unit.OnTurnEnd(this));
 
         GameState = new GameStateTurnChanging(this);
         CurrentPlayerNumber = PlayerNumberSum - CurrentPlayerNumber;
