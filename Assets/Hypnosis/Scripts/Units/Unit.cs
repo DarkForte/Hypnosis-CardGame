@@ -13,11 +13,7 @@ public abstract class Unit : MonoBehaviour
     /// UnitClicked event is invoked when user clicks the unit. It requires a collider on the unit game object to work.
     /// </summary>
     public event EventHandler UnitClicked;
-    /// <summary>
-    /// UnitSelected event is invoked when user clicks on unit that belongs to him. It requires a collider on the unit game object to work.
-    /// </summary>
-    public event EventHandler UnitSelected;
-    public event EventHandler UnitDeselected;
+
     /// <summary>
     /// UnitHighlighted event is invoked when user moves cursor over the unit. It requires a collider on the unit game object to work.
     /// </summary>
@@ -160,8 +156,6 @@ public abstract class Unit : MonoBehaviour
     public virtual void OnUnitSelected()
     {
         MarkAsSelected();
-        if (UnitSelected != null)
-            UnitSelected.Invoke(this, new EventArgs());
     }
     /// <summary>
     /// Method is called when unit is deselected.
@@ -169,9 +163,6 @@ public abstract class Unit : MonoBehaviour
     public virtual void OnUnitDeselected()
     {
         MarkAsFriendly();
-        //Buffs.ForEach(buff => buff.Apply(this));
-        if (UnitDeselected != null)
-            UnitDeselected.Invoke(this, new EventArgs());
     }
 
     public virtual void OnMoveStart(GameController gameController)
@@ -216,10 +207,9 @@ public abstract class Unit : MonoBehaviour
     /// </summary>
     public virtual void DealDamage(Unit target, GameController gameController, bool log = true)
     {
-        if (isMoving)
-            return;
+        if (!isMoving)
+            MarkAsAttacking(target);
 
-        MarkAsAttacking(target);
         target.Defend(this, AttackPower, gameController, log);
 
     }

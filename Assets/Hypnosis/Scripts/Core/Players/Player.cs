@@ -20,7 +20,7 @@ public abstract class Player : MonoBehaviour
     {
         int i;
         int cnt = CardPool.Count;
-        System.Random randomGenerator = new System.Random((int)Time.time + PlayerNumber);
+        System.Random randomGenerator = new System.Random((int)Time.time + PlayerNumber*10);
         for(i=0; i<cnt; i++)
         {
             int nowPos = randomGenerator.Next(i, cnt);
@@ -36,18 +36,16 @@ public abstract class Player : MonoBehaviour
     {
         CardPool = new List<CardType>();
         int i;
+
         for(i=1; i<=2; i++)
         {
-            CardPool.Add(CardType.SHILUO);
-            CardPool.Add(CardType.YEZI);
             CardPool.Add(CardType.JIXI);
             CardPool.Add(CardType.LIN);
+            CardPool.Add(CardType.CHONG);
         }
 
-        CardPool.Add(CardType.YUREN);
-        CardPool.Add(CardType.XIARUI);
-        CardPool.Add(CardType.JIZI);
-        CardPool.Add(CardType.CHUSHUI);
+        for (i = 1; i <= 11; i++)
+            CardPool.Add(CardType.SPECIAL);
 
         for (i = 1; i <= 10; i++)
             CardPool.Add(CardType.ATTACK);
@@ -55,8 +53,14 @@ public abstract class Player : MonoBehaviour
         for (i = 1; i <= 12; i++)
             CardPool.Add(CardType.MOVE);
 
-        for (i = 1; i <= 11; i++)
-            CardPool.Add(CardType.SPECIAL);
+
+        CardPool.Add(CardType.YUREN);
+        CardPool.Add(CardType.XIARUI);
+        CardPool.Add(CardType.JIZI);
+        CardPool.Add(CardType.CHUSHUI);
+        CardPool.Add(CardType.SHILUO);
+        CardPool.Add(CardType.YEZI);
+
 
         ShuffleCardPool();
 

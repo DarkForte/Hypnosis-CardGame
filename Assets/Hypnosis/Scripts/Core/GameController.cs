@@ -119,6 +119,8 @@ public class GameController : PunBehaviour, ITurnManagerCallbacks
             {
                 unit.UnitClicked += OnUnitClicked;
                 unit.UnitDestroyed += OnUnitDestroyed;
+                unit.UnitHighlighted += OnUnitHighlighted;
+                unit.UnitDehighlighted += OnUnitDehighlighted;
                 unit.logger = logger;
             }
         }
@@ -155,6 +157,8 @@ public class GameController : PunBehaviour, ITurnManagerCallbacks
         cell.OccupyingUnit = newUnit;
         newUnit.UnitClicked += OnUnitClicked;
         newUnit.UnitDestroyed += OnUnitDestroyed;
+        newUnit.UnitHighlighted += OnUnitHighlighted;
+        newUnit.UnitDehighlighted += OnUnitDehighlighted;
         newUnit.Initialize();
         newUnit.logger = logger;
         Units.Add(newUnit);
@@ -314,6 +318,16 @@ public class GameController : PunBehaviour, ITurnManagerCallbacks
     private void OnCellClicked(object sender, EventArgs e)
     {
         GameState.OnCellClicked(sender as Cell);
+    }
+
+    private void OnUnitHighlighted(object sender, EventArgs e)
+    {
+        GameState.OnUnitSelected(sender as Unit);
+    }
+
+    private void OnUnitDehighlighted(object sender, EventArgs e)
+    {
+        GameState.OnUnitDeselected(sender as Unit);
     }
 
     private void OnUnitClicked(object sender, EventArgs e)

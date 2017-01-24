@@ -25,6 +25,9 @@ public abstract class GameState
     public virtual void OnCellClicked(Cell cell)
     { }
 
+    public virtual void OnUnitSelected(Unit unit) { }
+    public virtual void OnUnitDeselected(Unit unit) { }
+
     public virtual void OnReceiveNetMessage(PhotonPlayer player, List<Vector2> targets)
     {}
 
