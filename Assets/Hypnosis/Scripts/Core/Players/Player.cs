@@ -39,9 +39,8 @@ public abstract class Player : MonoBehaviour
 
         for(i=1; i<=2; i++)
         {
-            CardPool.Add(CardType.JIXI);
-            CardPool.Add(CardType.LIN);
             CardPool.Add(CardType.CHONG);
+            CardPool.Add(CardType.SUI);
         }
 
         for (i = 1; i <= 11; i++)

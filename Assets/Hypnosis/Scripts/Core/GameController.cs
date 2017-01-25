@@ -11,8 +11,6 @@ using Photon;
 /// </summary>
 public class GameController : PunBehaviour, ITurnManagerCallbacks
 {
-    public event EventHandler GameEnded;
-    public event EventHandler UnitCreated;
     
     private GameState _gameState;//The grid delegates some of its behaviours to gameState object.
     public GameState GameState
