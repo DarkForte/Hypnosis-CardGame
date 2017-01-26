@@ -37,21 +37,17 @@ public abstract class Player : MonoBehaviour
         CardPool = new List<CardType>();
         int i;
 
-        for(i=1; i<=2; i++)
-        {
-            CardPool.Add(CardType.XUNQIU);
-        }
+        CardPool.Add(CardType.ZISHU);
+        CardPool.Add(CardType.XUNQIU);
         CardPool.Add(CardType.SHILUO);
 
-
-        for (i = 1; i <= 11; i++)
+        for (i = 1; i <= 3; i++)
             CardPool.Add(CardType.SPECIAL);
 
-
-        for (i = 1; i <= 10; i++)
+        for (i = 1; i <= 3; i++)
             CardPool.Add(CardType.ATTACK);
 
-        for (i = 1; i <= 12; i++)
+        for (i = 1; i <= 3; i++)
             CardPool.Add(CardType.MOVE);
 
 
@@ -67,7 +63,7 @@ public abstract class Player : MonoBehaviour
         CardPool.Add(CardType.JIXI);
 
 
-        ShuffleCardPool();
+        //ShuffleCardPool();
 
         p_CardPool = 0;
 
