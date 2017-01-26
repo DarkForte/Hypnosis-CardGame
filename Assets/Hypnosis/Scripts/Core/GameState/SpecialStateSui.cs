@@ -14,8 +14,7 @@ class SpecialStateSui : SpecialState
     {
         base.OnStateEnter();
         Vector2[] seq = { _unit.Cell.OffsetCoord };
-        _gameController.TurnManager.SendMove(seq);
-        _unit.PerformSpecialMove(_gameController, new List<Vector2>());
+        SendMove(seq);
     }
 }
 

@@ -20,8 +20,8 @@ class SpecialStateXiarui : SpecialState
     public override void OnUnitClicked(Unit unit)
     {
         base.OnUnitClicked(unit);
-        _gameController.TurnManager.SendMove(new Vector2[] { _unit.Cell.OffsetCoord, unit.Cell.OffsetCoord });
-        _unit.PerformSpecialMove(_gameController, new Vector2[] { unit.Cell.OffsetCoord }.ToList());
+        Vector2[] seq = { _unit.Cell.OffsetCoord, unit.Cell.OffsetCoord };
+        SendMove(seq);
     }
 }
 

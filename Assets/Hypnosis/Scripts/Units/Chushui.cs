@@ -14,9 +14,9 @@ class Chushui : GenericUnit
         AttackMoves = CommonMovement.dir4;
     }
 
-    public override void SpecialMove(GameController gameController)
+    public override SpecialState GetSpecialState(GameController gameController)
     {
-        gameController.GameState = new SpecialStateChushui(gameController, this);
+        return new SpecialStateChushui(gameController, this);
     }
 
     public override void PerformSpecialMove(GameController gameController, List<Vector2> targetSeq)

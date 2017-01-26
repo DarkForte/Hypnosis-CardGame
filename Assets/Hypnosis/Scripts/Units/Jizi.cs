@@ -26,9 +26,9 @@ class Jizi : GenericUnit
         gameController.EndTurn();
     }
 
-    public override void SpecialMove(GameController gameController)
+    public override SpecialState GetSpecialState(GameController gameController)
     {
-        gameController.GameState = new SpecialStateJizi(gameController, this);
+        return new SpecialStateJizi(gameController, this);
     }
 }
 

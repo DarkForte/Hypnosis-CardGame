@@ -51,9 +51,9 @@ class Lin : GenericUnit
         gameController.EndTurn();
     }
 
-    public override void SpecialMove(GameController gameController)
+    public override SpecialState GetSpecialState(GameController gameController)
     {
-        gameController.GameState = new SpecialStateLin(gameController, this);
+        return new SpecialStateLin(gameController, this);
     }
 
     private void RemoveBuffFromNeighbors(Dictionary<Vector2, Cell> cellMap)

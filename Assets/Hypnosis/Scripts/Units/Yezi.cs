@@ -23,9 +23,9 @@ class Yezi : GenericUnit
         gameController.EndTurn();
     }
 
-    public override void SpecialMove(GameController gameController)
+    public override SpecialState GetSpecialState(GameController gameController)
     {
-        gameController.GameState = new SpecialStateYezi(gameController, this);
+        return new SpecialStateYezi(gameController, this);
     }
 }
 

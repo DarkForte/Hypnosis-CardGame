@@ -40,10 +40,7 @@ class SpecialStateChushui : SpecialState
             if(_unitsInRange.Contains(unit))
             { 
                 Vector2[] targetSeq = new Vector2[] { _unit.Cell.OffsetCoord, controlledUnit.Cell.OffsetCoord, unit.Cell.OffsetCoord };
-                _gameController.TurnManager.SendMove(targetSeq);
-                List<Vector2> targetList = targetSeq.ToList();
-                targetList.RemoveAt(0);
-                _unit.PerformSpecialMove(_gameController, targetList);
+                SendMove(targetSeq);
             }
             else
             {

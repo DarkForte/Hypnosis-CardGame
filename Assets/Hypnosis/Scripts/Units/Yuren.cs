@@ -32,9 +32,9 @@ class Yuren : GenericUnit
         gameController.EndTurn();
     }
 
-    public override void SpecialMove(GameController gameController)
+    public override SpecialState GetSpecialState(GameController gameController)
     {
-        gameController.GameState = new SpecialStateYuren(gameController, this);
+        return new SpecialStateYuren(gameController, this);
     }
 }
 

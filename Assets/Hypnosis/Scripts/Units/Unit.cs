@@ -37,13 +37,15 @@ public abstract class Unit : MonoBehaviour
     public int HP { get { return _HP; } set { _HP = value; RefreshHealthBar(); } }
     public int DefenceFactor;
 
-    public List<Vector2> Moves { get; protected set; }
+    [HideInInspector]
+    public List<Vector2> Moves;
     public int Steps;
-    public List<Vector2> AttackMoves { get; protected set; }
+
+    [HideInInspector]
+    public List<Vector2> AttackMoves;
     public int AttackRange;
     public int AttackPower;
 
-    [HideInInspector]
     private bool specialUsed;
     public virtual bool SpecialUsed
     {
@@ -51,17 +53,18 @@ public abstract class Unit : MonoBehaviour
         set {specialUsed = value;}
     }
 
-    public abstract void SpecialMove(GameController gameController);
-
-    [HideInInspector]
-    public PresetLogger logger;
-
     /// <summary>
     /// Actually perform the special attack.
     /// </summary>
     /// <param name="gameController"></param>
     /// <param name="targetSeq">The sequence of the target (excluding the unit himself)</param>
     public abstract void PerformSpecialMove(GameController gameController, List<Vector2> targetSeq);
+    public abstract SpecialState GetSpecialState(GameController gameController);
+
+    public virtual void SpecialMove(GameController gameController)
+    {
+        gameController.GameState = GetSpecialState(gameController);
+    }
 
     /// <summary>
     /// Determines speed of movement animation.
@@ -82,6 +85,9 @@ public abstract class Unit : MonoBehaviour
     public string UnitName;
 
     private static IPathfinding _pathfinder = new BFSPathFinder();
+
+    [HideInInspector]
+    public PresetLogger logger;
 
     /// <summary>
     /// Method called after object instantiation to initialize fields etc. 

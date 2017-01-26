@@ -27,7 +27,7 @@ class Pawn : GenericUnit
 
     public override void PerformSpecialMove(GameController gameController, List<Vector2> targetSeq){}
 
-    public override void SpecialMove(GameController gameController){}
+    public override SpecialState GetSpecialState(GameController gameController){ return null; }
 
     protected override void OnKillingOthers(Unit victim, GameController gameController)
     {

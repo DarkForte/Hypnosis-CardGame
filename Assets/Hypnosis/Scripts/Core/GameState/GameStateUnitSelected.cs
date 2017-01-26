@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-abstract class GameStateUnitSelected : GameState
+public abstract class GameStateUnitSelected : GameState
 {
-    protected Unit _unit;
+    public Unit _unit;
     protected CardType _nowAction;
     protected List<Cell> _pathsInRange;
     protected List<Unit> _unitsInRange;

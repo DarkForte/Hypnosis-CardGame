@@ -24,8 +24,7 @@ class SpecialStateJixi : SpecialState
         if (_unitsInRange.Contains(unit))
         {
             Vector2[] move = { _unit.Cell.OffsetCoord, unit.Cell.OffsetCoord };
-            _gameController.TurnManager.SendMove(move);
-            _unit.PerformSpecialMove(_gameController, new Vector2[] { unit.Cell.OffsetCoord }.ToList());
+            SendMove(move);
         }
 
     }

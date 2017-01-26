@@ -22,8 +22,8 @@ class SpecialStateShiluo : SpecialState
         base.OnCellClicked(cell);
         if(_pathsInRange.Contains(cell))
         {
-            _gameController.TurnManager.SendMove(new Vector2[] { _unit.Cell.OffsetCoord, cell.OffsetCoord });
-            _unit.PerformSpecialMove(_gameController, new Vector2[] { cell.OffsetCoord }.ToList());
+            Vector2[] seq = { _unit.Cell.OffsetCoord, cell.OffsetCoord };
+            SendMove(seq);
         }
     }
 

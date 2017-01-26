@@ -22,8 +22,8 @@ class SpecialStateJizi : SpecialState
         base.OnUnitClicked(unit);
         if(unit.PlayerNumber != _unit.PlayerNumber)
         {
-            _gameController.TurnManager.SendMove(new Vector2[] { _unit.Cell.OffsetCoord, unit.Cell.OffsetCoord });
-            _unit.PerformSpecialMove(_gameController, new Vector2[] {unit.Cell.OffsetCoord}.ToList());
+            Vector2[] seq = { _unit.Cell.OffsetCoord, unit.Cell.OffsetCoord };
+            SendMove(seq);
         }
     }
 }

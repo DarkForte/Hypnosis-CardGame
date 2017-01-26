@@ -24,7 +24,6 @@ class SpecialStateLin : SpecialState
             return;
 
         Vector2[] seq = { _unit.Cell.OffsetCoord, unit.Cell.OffsetCoord };
-        _gameController.TurnManager.SendMove(seq);
-        _unit.PerformSpecialMove(_gameController, new Vector2[] {unit.Cell.OffsetCoord}.ToList());
+        SendMove(seq);
     }
 }

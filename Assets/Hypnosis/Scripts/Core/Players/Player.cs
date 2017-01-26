@@ -39,12 +39,14 @@ public abstract class Player : MonoBehaviour
 
         for(i=1; i<=2; i++)
         {
-            CardPool.Add(CardType.CHONG);
-            CardPool.Add(CardType.SUI);
+            CardPool.Add(CardType.XUNQIU);
         }
+        CardPool.Add(CardType.SHILUO);
+
 
         for (i = 1; i <= 11; i++)
             CardPool.Add(CardType.SPECIAL);
+
 
         for (i = 1; i <= 10; i++)
             CardPool.Add(CardType.ATTACK);
@@ -57,8 +59,12 @@ public abstract class Player : MonoBehaviour
         CardPool.Add(CardType.XIARUI);
         CardPool.Add(CardType.JIZI);
         CardPool.Add(CardType.CHUSHUI);
-        CardPool.Add(CardType.SHILUO);
+
         CardPool.Add(CardType.YEZI);
+        CardPool.Add(CardType.CHONG);
+        CardPool.Add(CardType.SUI);
+        CardPool.Add(CardType.LIN);
+        CardPool.Add(CardType.JIXI);
 
 
         ShuffleCardPool();

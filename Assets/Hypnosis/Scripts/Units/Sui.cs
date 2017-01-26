@@ -40,8 +40,8 @@ public class Sui : GenericUnit
         gameController.EndTurn();
     }
 
-    public override void SpecialMove(GameController gameController)
+    public override SpecialState GetSpecialState(GameController gameController)
     {
-        gameController.GameState = new SpecialStateSui(gameController, this);
+        return new SpecialStateSui(gameController, this);
     }
 }

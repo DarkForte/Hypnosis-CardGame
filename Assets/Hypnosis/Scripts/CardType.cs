@@ -5,7 +5,7 @@ using System.Text;
 
 public enum CardType
 {
-    MOVE, ATTACK, SPECIAL, YUREN, XIARUI, JIZI, CHUSHUI, SHILUO, YEZI, JIXI, LIN, CHONG, SUI
+    MOVE, ATTACK, SPECIAL, YUREN, XIARUI, JIZI, CHUSHUI, SHILUO, YEZI, JIXI, LIN, CHONG, SUI, XUNQIU
 }
 
 public class CardHelper

@@ -23,9 +23,9 @@ class Shiluo : GenericUnit
         gameController.EndTurn();
     }
 
-    public override void SpecialMove(GameController gameController)
+    public override SpecialState GetSpecialState(GameController gameController)
     {
-        gameController.GameState = new SpecialStateShiluo(gameController, this);
+        return new SpecialStateShiluo(gameController, this);
     }
 }
 

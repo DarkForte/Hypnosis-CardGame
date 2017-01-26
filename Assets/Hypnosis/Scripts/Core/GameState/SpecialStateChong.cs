@@ -47,8 +47,7 @@ class SpecialStateChong : SpecialState
     {
         GetEnemiesOnLine(cell).ForEach(unit => unit.UnMarkAsReachableEnemy());
         Vector2[] seq = { _unit.Cell.OffsetCoord, cell.OffsetCoord };
-        _gameController.TurnManager.SendMove(seq);
-        _unit.PerformSpecialMove(_gameController, new Vector2[] { cell.OffsetCoord }.ToList());
+        SendMove(seq);
     }
 
     

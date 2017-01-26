@@ -6,6 +6,11 @@ using UnityEngine;
 
 class Base : GenericUnit
 {
+    public override SpecialState GetSpecialState(GameController gameController)
+    {
+        return null;
+    }
+
     public override void Initialize()
     {
         base.Initialize();
@@ -21,9 +26,6 @@ class Base : GenericUnit
         
     }
 
-    public override void SpecialMove(GameController gameController)
-    {
-        
-    }
+
 }
 
