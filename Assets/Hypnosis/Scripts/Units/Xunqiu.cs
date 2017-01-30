@@ -18,11 +18,6 @@ public class Xunqiu : GenericUnit
 
     public override void PerformSpecialMove(GameController gameController, List<Vector2> targetSeq)
     {
-        /*
-        MethodInfo methodInfo = typeof(Yuren).GetMethod("PerformSpecialMove");
-        SpecialFunc specialFunc = (SpecialFunc)Delegate.CreateDelegate(typeof(SpecialFunc), null, methodInfo);
-        specialFunc(this, gameController, targetSeq);
-        */
         Unit servant = gameController.CellMap[targetSeq[0]].OccupyingUnit;
         virtualServant = (Unit)gameObject.AddComponent(servant.GetType());
 
@@ -47,7 +42,17 @@ public class Xunqiu : GenericUnit
     {
         base.OnTurnEnd(gameController);
         if(virtualServant!=null)
+        {
+            Moves = virtualServant.Moves;
+            Steps = virtualServant.Steps;
+            AttackMoves = virtualServant.AttackMoves;
+            AttackPower = virtualServant.AttackPower;
+            AttackRange = virtualServant.AttackPower;
+            HP = virtualServant.HP;
+            Cell = virtualServant.Cell;
+            Cell.OccupyingUnit = this; //If moved, the occupying unit will be the destoryed virtual servant
             Destroy(virtualServant);
+        }
         virtualServant = null;
     }
 
