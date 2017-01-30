@@ -36,7 +36,7 @@ public abstract class Player : MonoBehaviour
     {
         CardPool = new List<CardType>();
         
-        CardPool.Add(CardType.LIN);
+        CardPool.Add(CardType.JIXI);
         CardPool.Add(CardType.ATTACK);
         CardPool.Add(CardType.YUREN);
 

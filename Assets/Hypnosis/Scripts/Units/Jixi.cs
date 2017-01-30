@@ -47,19 +47,20 @@ class Jixi : GenericUnit
     {
         var cellMap = gameController.CellMap;
         Unit unit = cellMap[targetSeq[0]].OccupyingUnit;
+        Cell destCell = cellMap[targetSeq[1]];
 
-        Vector2 dir = unit.Cell.OffsetCoord - Cell.OffsetCoord;
-        Vector2 dest = unit.Cell.OffsetCoord;
+        Vector2 dir = (destCell.OffsetCoord - Cell.OffsetCoord).normalized;
         List<Cell> path = new List<Cell>();
+        path.Add(unit.Cell);
+
+        Vector2 dest = Cell.OffsetCoord;
         while (true)
         {
             path.Add(cellMap[dest]);
+            if (dest == destCell.OffsetCoord)
+                break;
 
             Vector2 next = dest + dir;
-            if (!cellMap.ContainsKey(next) || cellMap[next].IsTaken)
-            {
-                break;
-            }
             dest = next;
         }
 
