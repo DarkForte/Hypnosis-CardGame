@@ -35,9 +35,8 @@ public abstract class Player : MonoBehaviour
     public void InitCardPool()
     {
         CardPool = new List<CardType>();
-        int i;
-
-        CardPool.Add(CardType.JIXI);
+        
+        CardPool.Add(CardType.LIN);
         CardPool.Add(CardType.ATTACK);
         CardPool.Add(CardType.YUREN);
 
@@ -46,6 +45,8 @@ public abstract class Player : MonoBehaviour
         CardPool.Add(CardType.SPECIAL);
 
 
+        /*
+        int i;
         for (i = 1; i <= 8; i++)
             CardPool.Add(CardType.SPECIAL);
 
@@ -60,13 +61,15 @@ public abstract class Player : MonoBehaviour
         CardPool.Add(CardType.XIARUI);
         CardPool.Add(CardType.JIZI);
         CardPool.Add(CardType.CHUSHUI);
-
         CardPool.Add(CardType.YEZI);
+
         CardPool.Add(CardType.CHONG);
         CardPool.Add(CardType.SUI);
         CardPool.Add(CardType.LIN);
         CardPool.Add(CardType.JIXI);
         CardPool.Add(CardType.ZISHU);
+        CardPool.Add(CardType.SHILUO);
+        */
 
         //ShuffleCardPool();
 

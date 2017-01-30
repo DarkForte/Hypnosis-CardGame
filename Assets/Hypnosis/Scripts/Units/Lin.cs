@@ -20,6 +20,9 @@ class Lin : GenericUnit
         List<Unit> units = gameController.Units;
         foreach(Unit unit in units)
         {
+            if (unit is Base)
+                continue;
+
             if(unit.PlayerNumber == PlayerNumber)
             {
                 Buff buff = unit.Buffs.FindLast(b => b is AttackUp && (b as AttackUp).eternal == false);
@@ -47,7 +50,7 @@ class Lin : GenericUnit
         target.AddBuff(new AttackUp(Buff.ETERNAL, 1, true));
 
         SpecialUsed = true;
-        logger.LogSpecial(this, String.Format(specialMsg, target));
+        logger.LogSpecial(this, String.Format(specialMsg, target.UnitName));
         gameController.EndTurn();
     }
 

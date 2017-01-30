@@ -13,7 +13,7 @@ class SpecialStateLin : SpecialState
     public override void OnStateEnter()
     {
         base.OnStateEnter();
-        _unitsInRange = _unit.GetAllTargetsInRange(_gameController.CellMap).FindAll(unit => unit.PlayerNumber == _unit.PlayerNumber);
+        _unitsInRange = _unit.GetAllTargetsInRange(_gameController.CellMap, CommonMovement.dir4, 1).FindAll(unit => unit.PlayerNumber == _unit.PlayerNumber && !(unit is Base));
         _unitsInRange.ForEach(unit => unit.MarkAsReachableEnemy());
     }
 

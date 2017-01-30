@@ -193,15 +193,25 @@ public abstract class Unit : MonoBehaviour
         return GetTargetsInRange(cellMap, false);
     }
 
+    public List<Unit> GetAllTargetsInRange(Dictionary<Vector2, Cell> cellMap, List<Vector2> dirs, int steps)
+    {
+        return GetTargetsInRange(cellMap, false, dirs, steps);
+    }
+
     protected List<Unit> GetTargetsInRange(Dictionary<Vector2, Cell> cellMap, bool excludeFriend)
     {
+        return GetTargetsInRange(cellMap, excludeFriend, AttackMoves, AttackRange);
+    }
+
+    protected List<Unit> GetTargetsInRange(Dictionary<Vector2, Cell> cellMap, bool excludeFriend, List<Vector2> moves, int steps)
+    {
         List<Unit> ret = new List<Unit>();
-        List<Cell> destinationCells = BFSDestinationFinder.FindCellsWithinSteps(cellMap, Cell, AttackMoves, AttackRange, PlayerNumber, pierceFriend:true, pierceEnemy:true, includeTakenCell:true);
+        List<Cell> destinationCells = BFSDestinationFinder.FindCellsWithinSteps(cellMap, Cell, moves, steps, PlayerNumber, pierceFriend: true, pierceEnemy: true, includeTakenCell: true);
         foreach (Cell cell in destinationCells)
         {
             if (cell.IsTaken)
             {
-                if(!excludeFriend || (excludeFriend && cell.OccupyingUnit.PlayerNumber != PlayerNumber))
+                if (!excludeFriend || (excludeFriend && cell.OccupyingUnit.PlayerNumber != PlayerNumber))
                     ret.Add(cell.OccupyingUnit);
             }
         }
