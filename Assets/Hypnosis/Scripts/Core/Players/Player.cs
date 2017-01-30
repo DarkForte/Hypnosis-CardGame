@@ -37,14 +37,14 @@ public abstract class Player : MonoBehaviour
         CardPool = new List<CardType>();
         int i;
 
-
-        CardPool.Add(CardType.XUNQIU);
-        CardPool.Add(CardType.SHILUO);
-
-        CardPool.Add(CardType.SPECIAL);
-        CardPool.Add(CardType.SPECIAL);
-        CardPool.Add(CardType.SPECIAL);
+        CardPool.Add(CardType.JIXI);
+        CardPool.Add(CardType.ATTACK);
         CardPool.Add(CardType.YUREN);
+
+        CardPool.Add(CardType.SPECIAL);
+        CardPool.Add(CardType.SPECIAL);
+        CardPool.Add(CardType.SPECIAL);
+
 
         for (i = 1; i <= 8; i++)
             CardPool.Add(CardType.SPECIAL);
@@ -55,7 +55,7 @@ public abstract class Player : MonoBehaviour
         for (i = 1; i <= 11; i++)
             CardPool.Add(CardType.MOVE);
 
-
+        CardPool.Add(CardType.XUNQIU);
         CardPool.Add(CardType.YUREN);
         CardPool.Add(CardType.XIARUI);
         CardPool.Add(CardType.JIZI);

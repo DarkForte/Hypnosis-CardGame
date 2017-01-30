@@ -88,7 +88,7 @@ class GameStateWaitingInput : GameState
     {
         List<Cell> ret = new List<Cell>();
 
-        Vector2 start = _gameController.Units.Find(unit => unit.UnitName == "Base" && unit.PlayerNumber == playerNumber).Cell.OffsetCoord;
+        Vector2 start = _gameController.Units.Find(unit => unit is Base && unit.PlayerNumber == playerNumber).Cell.OffsetCoord;
         HashSet<Vector2> used = new HashSet<Vector2>();
         Queue<Vector2> q = new Queue<Vector2>();
         Dictionary<Vector2, Cell> cellMap = _gameController.CellMap;
