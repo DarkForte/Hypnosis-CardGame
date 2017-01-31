@@ -266,6 +266,11 @@ public class GameController : PunBehaviour, ITurnManagerCallbacks
         localCardReady = true;
     }
 
+    public void CancelButtonPressed()
+    {
+        GameState = new GameStateWaitingInput(this, CardType.SPECIAL);
+    }
+
     private void JudgeResult()
     {
         List<Unit> bases = Units.FindAll(unit => unit is Base);

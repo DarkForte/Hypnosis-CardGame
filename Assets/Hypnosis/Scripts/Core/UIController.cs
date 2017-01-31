@@ -11,6 +11,7 @@ public class UIController : MonoBehaviour
     public GameObject PassButton;
     public GameObject PickCardButton;
     public GameObject ConnectButton;
+    public GameObject CancelButton;
     public Transform CardPanelBottom;
     public Transform CardPanelTop;
 

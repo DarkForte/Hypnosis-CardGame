@@ -12,6 +12,12 @@ public class SpecialState : GameStateUnitSelected
     {
     }
 
+    public override void OnStateEnter()
+    {
+        base.OnStateEnter();
+        _gameController.uiController.CancelButton.SetActive(true);
+    }
+
     public override void OnUnitClicked(Unit unit)
     {
         base.OnUnitClicked(unit);
@@ -35,6 +41,12 @@ public class SpecialState : GameStateUnitSelected
         {
             SendFunc(seq);
         }
+    }
+
+    public override void OnStateExit()
+    {
+        _gameController.uiController.CancelButton.SetActive(false);
+        base.OnStateExit();
     }
 }
 

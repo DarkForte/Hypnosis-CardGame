@@ -4,7 +4,7 @@ using System.Linq;
 public abstract class GameStateUnitSelected : GameState
 {
     public Unit _unit;
-    protected CardType _nowAction;
+    public CardType _nowAction;
     protected List<Cell> _pathsInRange;
     protected List<Unit> _unitsInRange;
 
