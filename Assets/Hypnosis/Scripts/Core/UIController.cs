@@ -55,6 +55,12 @@ public class UIController : MonoBehaviour
         PickCardButton.SetActive(false);
     }
 
+    public void HideButtonPressed()
+    {
+        CardInterface.SetActive(false);
+        PickCardButton.SetActive(true);
+    } 
+
     public Transform CardInterfaceBottomPanel()
     {
         return CardInterface.transform.GetChild(0).Find("Bottom Panel");
